@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.22;
 
-import {ONFT721Enumerable} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721Enumerable.sol";
+// import {ONFT721Enumerable} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721Enumerable.sol";
+import {ONFT721} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721.sol";
 
-contract ONFTTool is ONFT721Enumerable {
+contract ONFTTool is ONFT721 {
     // Game Engine Contract
     address public gameEngine;
 
@@ -14,7 +15,7 @@ contract ONFTTool is ONFT721Enumerable {
         string memory _symbol,
         address _lzEndpoint,
         address _delegate
-    ) ONFT721Enumerable(_name, _symbol, _lzEndpoint, _delegate) {}
+    ) ONFT721(_name, _symbol, _lzEndpoint, _delegate) {}
 
     function mint() public {
         _mint(msg.sender, mintCount);

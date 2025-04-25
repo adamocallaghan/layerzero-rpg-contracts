@@ -21,8 +21,8 @@ contract DeployONFTCharacter is Script {
         // op lz endpoint + id
         string memory OPTIMISM_LZ_ENDPOINT = "OPTIMISM_SEPOLIA_LZ_ENDPOINT";
 
-        string memory ONFT_NAME = "ONFT_NAME";
-        string memory ONFT_SYMBOL = "ONFT_SYMBOL";
+        string memory ONFT_CHARACTER_NAME = "ONFT_CHARACTER_NAME";
+        string memory ONFT_CHARACTER_SYMBOL = "ONFT_CHARACTER_SYMBOL";
         
         // ========================
         // === BASE DEPLOYMENTS ===
@@ -38,8 +38,8 @@ contract DeployONFTCharacter is Script {
 
         // deploy ONFT
         ONFTCharacter baseONFT = new ONFTCharacter{salt: "fox"}(
-            ONFT_NAME,
-            ONFT_SYMBOL,
+            ONFT_CHARACTER_NAME,
+            ONFT_CHARACTER_SYMBOL,
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS) // owner
         );
@@ -61,8 +61,8 @@ contract DeployONFTCharacter is Script {
 
         // deploy ONFT
         ONFTCharacter optimismONFT = new ONFTCharacter{salt: "fox"}(
-            ONFT_NAME,
-            ONFT_SYMBOL,
+            ONFT_CHARACTER_NAME,
+            ONFT_CHARACTER_SYMBOL,
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS) // owner
         );

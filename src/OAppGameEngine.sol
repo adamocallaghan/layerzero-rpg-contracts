@@ -133,7 +133,7 @@ contract OAppGameEngine is OApp {
     //      - the player will 'spend' the 10 gems from Base on minting the Tool
     //      - so they will have to play the Optimism level to get the 10 to bridge back
 
-    function bridge() public {
+    function bridge(uint256 characterTokenId, uint256 toolTokenId) public {
         uint32 endpointID = endpoint.eid(); // get the endpoint ID
         // ============
         // BASE SEPOLIA
@@ -142,7 +142,7 @@ contract OAppGameEngine is OApp {
             // get users gem balance
             uint256 userGemsBalance = gemsOFT.balanceOf(msg.sender);
             // get user character tokenId
-            uint256 tokenId = characterONFT.tokenOfOwnerByIndex(msg.sender, 0);
+            // uint256 tokenId = characterONFT.tokenOfOwnerByIndex(msg.sender, 0);
             if (userGemsBalance < 10) {
                 // 10 == finished the level & can mint tool
                 revert Error__NotEnoughGemsToBridge(userGemsBalance);
@@ -150,7 +150,7 @@ contract OAppGameEngine is OApp {
             // Bridge logic for Character & Gems
             // *** PASS THE OPPOSITE END EID - i.e. OP SEPOLIA! ***
             _bridgeGems(40232, userGemsBalance);
-            _bridgeCharacter(40232, tokenId);
+            _bridgeCharacter(40232, characterTokenId);
             // ================
             // OPTIMISM SEPOLIA
             // ================
@@ -158,12 +158,12 @@ contract OAppGameEngine is OApp {
             // get users gem balance
             uint256 userGemsBalance = gemsOFT.balanceOf(msg.sender);
             // get user character tokenId
-            uint256 characterTokenId = characterONFT.tokenOfOwnerByIndex(
-                msg.sender,
-                0
-            );
+            // uint256 characterTokenId = characterONFT.tokenOfOwnerByIndex(
+            //     msg.sender,
+            //     0
+            // );
             // get user tool tokenId
-            uint256 toolTokenId = toolONFT.tokenOfOwnerByIndex(msg.sender, 0);
+            // uint256 toolTokenId = toolONFT.tokenOfOwnerByIndex(msg.sender, 0);
             if (userGemsBalance < 10) {
                 // 10 == finished the level & can mint tool
                 revert Error__NotEnoughGemsToBridge(userGemsBalance);
@@ -181,7 +181,6 @@ contract OAppGameEngine is OApp {
         uint256 _userGemsBalance
     ) internal {
         // OftSendParam memory _sendParam;
-
         // _sendParam.dstEid = _destinationEndpointID;
         // _sendParam.to = AddressCast.toBytes32(msg.sender);
         // _sendParam.amountLD = _userGemsBalance;
@@ -190,11 +189,9 @@ contract OAppGameEngine is OApp {
         //     .extraOptions = "0x00030100110100000000000000000000000000030d40";
         // _sendParam.composeMsg = "0x";
         // _sendParam.oftCmd = "0x";
-
         // MessagingFee memory _fee;
         // _fee.nativeFee = 10000000000000000;
         // _fee.lzTokenFee = 0;
-
         // // call send on OFTGems contract
         // IOFT(address(gemsOFT)).send(_sendParam, _fee, msg.sender);
     }
@@ -227,7 +224,14 @@ contract OAppGameEngine is OApp {
     ) internal {
         // bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200000, 0);
         bytes memory options = "0x00030100110100000000000000000000000000030d40";
-        SendParam memory testSendParam = SendParam(_destinationEndpointID, AddressCast.toBytes32(msg.sender), _tokenId, options, "", "");
+        SendParam memory testSendParam = SendParam(
+            _destinationEndpointID,
+            AddressCast.toBytes32(msg.sender),
+            _tokenId,
+            options,
+            "",
+            ""
+        );
 
         SendParam memory _sendParam;
 
@@ -251,7 +255,7 @@ contract OAppGameEngine is OApp {
         Origin calldata _origin,
         bytes32 _guid,
         bytes calldata payload,
-        address, /*_executor*/
+        address /*_executor*/,
         bytes calldata /*_extraData*/
     ) internal override {
         // (uint256 amount, address recipient, uint8 choice) = abi.decode(payload, (uint256, address, uint8));

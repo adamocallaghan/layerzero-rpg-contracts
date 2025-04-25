@@ -2,10 +2,10 @@
 pragma solidity ^0.8.22;
 
 import {Script, console2} from "lib/forge-std/src/Script.sol";
-import {ONFTTool} from "../src/ONFTTool.sol";
+import {OAppGameEngine} from "../src/OAppGameEngine.sol";
 import {AddressCast} from "../utils/AddressCast.sol";
 
-contract DeployONFTTool is Script {
+contract DeployOAppGameEngine is Script {
     function run() external {
         // ===================
         // === SCRIPT VARS ===
@@ -21,8 +21,10 @@ contract DeployONFTTool is Script {
         // op lz endpoint + id
         string memory OPTIMISM_LZ_ENDPOINT = "OPTIMISM_SEPOLIA_LZ_ENDPOINT";
 
-        string memory ONFT_TOOL_NAME = "ONFT_TOOL_NAME";
-        string memory ONFT_TOOL_SYMBOL = "ONFT_TOOL_SYMBOL";
+        // ONFT character & tool addresses for OAPP constructor
+        address ONFT_CHARACTER_ADDRESS = vm.envAddress("ONFT_CHARACTER_ADDRESS");
+        address ONFT_TOOL_ADDRESS = vm.envAddress("ONFT_TOOL_ADDRESS");
+        address OFT_GEMS_ADDRESS = address(0); // *** we'lll sort gems again ***
         
         // ========================
         // === BASE DEPLOYMENTS ===
@@ -36,14 +38,15 @@ contract DeployONFTTool is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // deploy ONFT
-        ONFTTool baseONFT = new ONFTTool{salt: "fox"}(
-            ONFT_TOOL_NAME,
-            ONFT_TOOL_SYMBOL,
+        // deploy OAPP
+        OAppGameEngine baseOapp = new OAppGameEngine{salt: "fox"}(
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
-            vm.envAddress(DEPLOYER_PUBLIC_ADDRESS) // owner
+            vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
+            ONFT_CHARACTER_ADDRESS,
+            ONFT_TOOL_ADDRESS,
+            OFT_GEMS_ADDRESS
         );
-        console2.log("Our ONFT Tool contract on Base is deployed to: ", address(baseONFT));
+        console2.log("Our OAPP Game Engine contract on Base is deployed to: ", address(baseOapp));
 
         vm.stopBroadcast();
 
@@ -59,14 +62,15 @@ contract DeployONFTTool is Script {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        // deploy ONFT
-        ONFTTool optimismONFT = new ONFTTool{salt: "fox"}(
-            ONFT_TOOL_NAME,
-            ONFT_TOOL_SYMBOL,
+        // deploy OAPP
+        OAppGameEngine optimismOapp = new OAppGameEngine{salt: "fox"}(
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint
-            vm.envAddress(DEPLOYER_PUBLIC_ADDRESS) // owner
+            vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
+            ONFT_CHARACTER_ADDRESS,
+            ONFT_TOOL_ADDRESS,
+            OFT_GEMS_ADDRESS
         );
-        console2.log("Our ONFT Tool contract on Optimism is deployed to: ", address(optimismONFT));
+        console2.log("Our OAPP Game Engine contract on Optimism is deployed to: ", address(optimismOapp));
 
         vm.stopBroadcast();
     }
