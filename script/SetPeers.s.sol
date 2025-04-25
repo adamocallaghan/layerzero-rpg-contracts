@@ -8,6 +8,10 @@ interface IONFT {
     function setPeer(uint32, bytes32) external;
 }
 
+interface IOFT {
+    function setPeer(uint32, bytes32) external;
+}
+
 contract SetPeers is Script {
     function run() external {
         // ===================
@@ -28,6 +32,7 @@ contract SetPeers is Script {
         // our deployed game asset addresses (from our env file)
         address ONFT_CHARACTER_ADDRESS = vm.envAddress("ONFT_CHARACTER_ADDRESS");
         address ONFT_TOOL_ADDRESS = vm.envAddress("ONFT_TOOL_ADDRESS");
+        address OFT_GEMS_ADDRESS = vm.envAddress("OFT_GEMS_ADDRESS");
 
         // =============================================================
         // === ADDRESS CAST LIB: 
@@ -42,6 +47,9 @@ contract SetPeers is Script {
         bytes32 ONFT_TOOL_BYTES32 = AddressCast.toBytes32(ONFT_TOOL_ADDRESS);
         console2.logBytes32(ONFT_TOOL_BYTES32);
 
+        bytes32 OFT_GEMS_BYTES32 = AddressCast.toBytes32(OFT_GEMS_ADDRESS);
+        console2.logBytes32(OFT_GEMS_BYTES32);
+
         // ====================
         // === BASE WIRE-UP ===
         // ====================
@@ -52,6 +60,7 @@ contract SetPeers is Script {
         console2.log("                                        ");
         console2.log("Setting Base ONFT *Character* Peer at: ", ONFT_CHARACTER_ADDRESS);
         console2.log("Setting Base ONFT *Tool* Peer at: ", ONFT_TOOL_ADDRESS);
+        console2.log("Setting Base OFT *Gems* Peer at: ", OFT_GEMS_ADDRESS);
 
         vm.createSelectFork("base");
 
@@ -60,6 +69,8 @@ contract SetPeers is Script {
         // ONFT Wire-Ups
         IONFT(ONFT_CHARACTER_ADDRESS).setPeer(OPTIMISM_SEPOLIA_LZ_ENDPOINT_ID, ONFT_CHARACTER_BYTES32);
         IONFT(ONFT_TOOL_ADDRESS).setPeer(OPTIMISM_SEPOLIA_LZ_ENDPOINT_ID, ONFT_TOOL_BYTES32);
+        // OFT Wire-Up
+        IOFT(OFT_GEMS_ADDRESS).setPeer(OPTIMISM_SEPOLIA_LZ_ENDPOINT_ID, OFT_GEMS_BYTES32);
 
         vm.stopBroadcast();
 
@@ -73,6 +84,7 @@ contract SetPeers is Script {
         console2.log("                                        ");
         console2.log("Setting Optimism ONFT Peer at: ", ONFT_CHARACTER_ADDRESS);
         console2.log("Setting Optimism ONFT *Tool* Peer at: ", ONFT_TOOL_ADDRESS);
+        console2.log("Setting Optimism OFT *Gems* Peer at: ", OFT_GEMS_ADDRESS);
 
         vm.createSelectFork("optimism");
 
@@ -81,6 +93,8 @@ contract SetPeers is Script {
         // ONFT Wire-Ups
         IONFT(ONFT_CHARACTER_ADDRESS).setPeer(BASE_SEPOLIA_LZ_ENDPOINT_ID, ONFT_CHARACTER_BYTES32);
         IONFT(ONFT_TOOL_ADDRESS).setPeer(BASE_SEPOLIA_LZ_ENDPOINT_ID, ONFT_TOOL_BYTES32);
+        // OFT Wire-Up
+        IOFT(OFT_GEMS_ADDRESS).setPeer(BASE_SEPOLIA_LZ_ENDPOINT_ID, OFT_GEMS_BYTES32);
 
         vm.stopBroadcast();
     }
