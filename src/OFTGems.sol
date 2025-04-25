@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.22;
 
-import {OFT} from "@layerzerolabs/oft-evm/contracts/OFT.sol";
+import {OFT} from "lib/devtools/packages/oft-evm/contracts/OFT.sol";
+import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
-contract OFT_Sepolia is OFT {
+contract OFTGems is OFT {
     // Game Engine Contract
     address public gameEngine;
 
@@ -13,7 +14,7 @@ contract OFT_Sepolia is OFT {
         string memory _symbol,
         address _lzEndpoint,
         address _delegate
-    ) OFT(_name, _symbol, _lzEndpoint, _delegate) {}
+    ) OFT(_name, _symbol, _lzEndpoint, _delegate) Ownable(_delegate) {}
 
     function setGameEngine(address _gameEngine) public {
         // @note: add onlyDelegate modifier
