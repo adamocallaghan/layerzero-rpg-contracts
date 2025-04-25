@@ -15,7 +15,7 @@ contract OAppGameEngine is OApp {
     // ====================
     // === STORAGE VARS ===
     // ====================
-    
+
     IONFTCharacter public characterONFT;
     IONFTTool public toolONFT;
     IOFTGems public gemsOFT;
@@ -32,6 +32,7 @@ contract OAppGameEngine is OApp {
     // ==============
 
     error Error__NotEnoughGemsToMint(uint256 _playerGemsBalance);
+    error Error__NotEnoughGemsToBridge(uint256 _playerGemsBalance);
     error Error__ToolCannotBeMintedOnThisChain();
 
     // ==============
@@ -68,7 +69,7 @@ contract OAppGameEngine is OApp {
     // to just mint a load of gems and will play the level to get them instead
 
     function mintGems(address _player, uint256 _amount) public {
-        if(_amount > 10) {
+        if (_amount > 10) {
             revert Error__TooManyGems();
         }
         gemsOFT.mintGemsToPlayer(_player, _amount);
@@ -95,16 +96,55 @@ contract OAppGameEngine is OApp {
     function mintTool(address _player) public {
         // get users gem balance
         uint256 userGemsBalance = gemsOFT.balanceOf(_player);
-        if(userGemsBalance < 10) { // 10 == finished the level & can mint tool
-            revert Error__NotEnoughTokensToMint(userGemsBalance);
+        if (userGemsBalance < 10) {
+            // 10 == finished the level & can mint tool
+            revert Error__NotEnoughGemsToMint(userGemsBalance);
         }
         // @todo: burn the player's gems here
         uint32 endpointID = ILayerZeroEndpointV2(_endpoint).eid(); // get the endpoint ID
-        if(endpointID != 40232) {
+        if (endpointID != 40232) {
             revert Error__ToolCannotBeMintedOnThisChain(); // tool can only be minted on Op Sepolia!
         }
         toolONFT.mintToolToPlayer(_player);
         emit ToolMinted(_player);
+    }
+
+    // ==============
+    // === BRIDGE ===
+    // ==============
+
+    // @note: so our bridge logic is...
+    //      - check for chain using endpointID.eid
+    //      - if eid == base { player must have 10 gems to bridge }
+    //      - if eid == sepolia { player must have 10 gems to bridge back }
+    //      - the player will 'spend' the 10 gems from Base on minting the Tool
+    //      - so they will have to play the Optimism level to get the 10 to bridge back
+
+    function bridge() public {
+        uint32 endpointID = ILayerZeroEndpointV2(_endpoint).eid(); // get the endpoint ID
+        // ============
+        // BASE SEPOLIA
+        // ============
+        if (endpointID != 40245) {
+            // get users gem balance
+            uint256 userGemsBalance = gemsOFT.balanceOf(_player);
+            if (userGemsBalance < 10) {
+                // 10 == finished the level & can mint tool
+                revert Error__NotEnoughGemsToBridge(userGemsBalance);
+            }
+            // Bridge logic for Character & Gems
+        // ================
+        // OPTIMISM SEPOLIA
+        // ================
+        } else if (endpointID != 40232) {
+            // get users gem balance
+            uint256 userGemsBalance = gemsOFT.balanceOf(_player);
+            if (userGemsBalance < 10) {
+                // 10 == finished the level & can mint tool
+                revert Error__NotEnoughGemsToBridge(userGemsBalance);
+            }
+            // Bridge logic for Character, Tool & Gems
+        }
     }
 
     // ===============
