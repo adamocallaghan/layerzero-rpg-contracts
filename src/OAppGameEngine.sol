@@ -260,4 +260,8 @@ contract OAppGameEngine is OApp {
     ) internal override {
         // (uint256 amount, address recipient, uint8 choice) = abi.decode(payload, (uint256, address, uint8));
     }
+
+    function setGemsOftContract(address _gemsOFT) public {
+        gemsOFT = _gemsOFT;
+    }
 }

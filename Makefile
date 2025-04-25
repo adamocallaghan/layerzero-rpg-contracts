@@ -49,6 +49,9 @@ get-optimism-tool-peer:
 # === MINT & BALANCES ===
 # =======================
 
+mint-character-from-game-engine:
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "mintCharacter(address)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
+
 mint-character-on-base:
 	cast send $(ONFT_CHARACTER_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
