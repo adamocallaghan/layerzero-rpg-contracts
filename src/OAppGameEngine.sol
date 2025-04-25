@@ -2,12 +2,12 @@
 pragma solidity ^0.8.22;
 
 import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp/OApp.sol";
-import {IONFT721, MessagingFee, MessagingReceipt} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
+import {IONFT721, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
 import {IOFT} from "lib/devtools/packages/oft-evm/contracts/interfaces/IOFT.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import {IOFTGems, IONFTCharacter, IONFTTool} from "./interfaces/GameInterfaces.sol";
 import {AddressCast} from "../utils/AddressCast.sol";
-import { OptionsBuilder } from "@layerzerolabs/oapp-evm/contracts/oapp/libs/OptionsBuilder.sol";
+// import { OptionsBuilder } from "@layerzerolabs/oapp-evm/contracts/oapp/libs/OptionsBuilder.sol";
 
 interface ILayerZeroEndpointV2 {
     function eid() external view returns (uint32);
@@ -23,14 +23,24 @@ struct OftSendParam {
     bytes oftCmd; // The OFT command to be executed, unused in default OFT implementations.
 }
 
-struct SendParam {
-    uint32 dstEid; // Destination LayerZero EndpointV2 ID.
-    bytes32 to; // Recipient address.
-    uint256 tokenId;
-    bytes extraOptions; // Additional options supplied by the caller to be used in the LayerZero message.
-    bytes composeMsg; // The composed message for the send() operation.
-    bytes onftCmd; // The ONFT command to be executed, unused in default ONFT implementations.
-}
+// struct OftSendParam {
+//     uint32 dstEid; // Destination endpoint ID.
+//     bytes32 to; // Recipient address.
+//     uint256 amountLD; // Amount to send in local decimals.
+//     uint256 minAmountLD; // Minimum amount to send in local decimals.
+//     bytes extraOptions; // Additional options supplied by the caller to be used in the LayerZero message.
+//     bytes composeMsg; // The composed message for the send() operation.
+//     bytes oftCmd; // The OFT command to be executed, unused in default OFT implementations.
+// }
+
+// struct SendParam {
+//     uint32 dstEid; // Destination LayerZero EndpointV2 ID.
+//     bytes32 to; // Recipient address.
+//     uint256 tokenId;
+//     bytes extraOptions; // Additional options supplied by the caller to be used in the LayerZero message.
+//     bytes composeMsg; // The composed message for the send() operation.
+//     bytes onftCmd; // The ONFT command to be executed, unused in default ONFT implementations.
+// }
 
 // struct MessagingFee {
 //     uint256 nativeFee;
@@ -194,23 +204,23 @@ contract OAppGameEngine is OApp {
         uint32 _destinationEndpointID,
         uint256 _userGemsBalance
     ) internal {
-        OftSendParam memory _sendParam;
+        // OftSendParam memory _sendParam;
 
-        _sendParam.dstEid = _destinationEndpointID;
-        _sendParam.to = AddressCast.toBytes32(msg.sender);
-        _sendParam.amountLD = _userGemsBalance;
-        _sendParam.minAmountLD = _userGemsBalance;
-        _sendParam
-            .extraOptions = "0x00030100110100000000000000000000000000030d40";
-        _sendParam.composeMsg = "0x";
-        _sendParam.oftCmd = "0x";
+        // _sendParam.dstEid = _destinationEndpointID;
+        // _sendParam.to = AddressCast.toBytes32(msg.sender);
+        // _sendParam.amountLD = _userGemsBalance;
+        // _sendParam.minAmountLD = _userGemsBalance;
+        // _sendParam
+        //     .extraOptions = "0x00030100110100000000000000000000000000030d40";
+        // _sendParam.composeMsg = "0x";
+        // _sendParam.oftCmd = "0x";
 
-        MessagingFee memory _fee;
-        _fee.nativeFee = 10000000000000000;
-        _fee.lzTokenFee = 0;
+        // MessagingFee memory _fee;
+        // _fee.nativeFee = 10000000000000000;
+        // _fee.lzTokenFee = 0;
 
-        // call send on OFTGems contract
-        IOFT(address(gemsOFT)).send(_sendParam, _fee, msg.sender);
+        // // call send on OFTGems contract
+        // IOFT(address(gemsOFT)).send(_sendParam, _fee, msg.sender);
     }
 
     function _bridgeCharacter(
@@ -239,7 +249,8 @@ contract OAppGameEngine is OApp {
         uint32 _destinationEndpointID,
         uint256 _tokenId
     ) internal {
-        bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200000, 0);
+        // bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200000, 0);
+        bytes memory options = "0x00030100110100000000000000000000000000030d40";
         SendParam memory testSendParam = SendParam(_destinationEndpointID, AddressCast.toBytes32(msg.sender), _tokenId, options, "", "");
 
         SendParam memory _sendParam;
@@ -267,6 +278,6 @@ contract OAppGameEngine is OApp {
         address, /*_executor*/
         bytes calldata /*_extraData*/
     ) internal override {
-        (uint256 amount, address recipient, uint8 choice) = abi.decode(payload, (uint256, address, uint8));
+        // (uint256 amount, address recipient, uint8 choice) = abi.decode(payload, (uint256, address, uint8));
     }
 }
