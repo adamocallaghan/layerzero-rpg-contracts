@@ -11,8 +11,11 @@ deploy-contracts-multichain:
 verify-base-contract:
 	forge verify-contract --chain-id 84532 $(ONFT_ADDRESS) src/ONFTCharacter.sol:ONFTCharacter --constructor-args-path base-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
 
+verify-optimism-contract:
+	forge verify-contract --chain-id 11155420  $(ONFT_ADDRESS) src/ONFTCharacter.sol:ONFTCharacter --constructor-args-path base-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
+
 # ======================
-# === PEERS COMMANDS ===
+# === PEER COMMANDS ===
 # ======================
 
 set-peers:
@@ -24,12 +27,12 @@ get-base-peer:
 get-optimism-peer:
 	cast call $(ONFT_ADDRESS) "isPeer(uint32,bytes32)(bool)" $(BASE_SEPOLIA_LZ_ENDPOINT_ID) $(ONFT_BYTES32) --rpc-url $(OPTIMISM_SEPOLIA_RPC)
 
-mint-onft:
-	cast send $(ONFT_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
+# =======================
+# === MINT & BALANCES ===
+# =======================
 
-# ======================
-# === CHECK BALANCES ===
-# ======================
+mint-onft-on-base:
+	cast send $(ONFT_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
 get-your-base-onft-balance:
 	cast call $(ONFT_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC)
@@ -44,7 +47,7 @@ get-your-optimism-onft-balance:
 # approve-onft:
 # 	cast send $(ONFT_ADDRESS) "approve(address,uint256)" $(ONFT_ADDRESS) 1 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
-get-quote:
+get-quote-on-base:
 	cast call $(ONFT_ADDRESS) "quoteSend((uint32,bytes32,uint256,bytes,bytes,bytes),bool)(uint256,uint256)" "($(OPTIMISM_SEPOLIA_LZ_ENDPOINT_ID),$(DEPLOYER_BYTES32_ADDRESS),1,$(MESSAGE_OPTIONS_BYTES),0x,0x)" false --rpc-url $(BASE_SEPOLIA_RPC)
 
 send-onft-from-base-to-optimism:

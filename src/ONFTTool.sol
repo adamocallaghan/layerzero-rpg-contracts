@@ -3,7 +3,7 @@ pragma solidity ^0.8.22;
 
 import {ONFT721} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721.sol";
 
-contract ONFTCharacter is ONFT721 {
+contract ONFTTool is ONFT721 {
     // Game Engine Contract
     address public gameEngine;
 
@@ -26,8 +26,11 @@ contract ONFTCharacter is ONFT721 {
         gameEngine = _gameEngine;
     }
 
-    function mintCharacterToPlayer(address _player) public {
+    function mintToolToPlayer(address _player) public {
         // @note: add onlyGameEngine modifier
+        // @note: add require/if to ensure player has:
+        //        - a Character NFT
+        //        - enough Gems tokens
         _mint(_player, mintCount);
         mintCount++;
     }
