@@ -262,6 +262,6 @@ contract OAppGameEngine is OApp {
     }
 
     function setGemsOftContract(address _gemsOFT) public {
-        gemsOFT = _gemsOFT;
+        gemsOFT = IOFTGems(_gemsOFT);
     }
 }

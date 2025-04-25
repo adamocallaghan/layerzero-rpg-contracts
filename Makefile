@@ -11,6 +11,9 @@ deploy-character-multichain:
 deploy-tool-multichain:
 	forge script script/DeployONFTTool.s.sol:DeployONFTTool --slow --multi --broadcast --verify --account deployer -vvvvv
 
+deploy-gems-multichain:
+	forge script script/DeployOFTGems.s.sol:DeployOFTGems --slow --multi --broadcast --verify --account deployer -vvvvv
+
 deploy-game-engine-multichain:
 	forge script script/DeployOAppGameEngine.s.sol:DeployOAppGameEngine --slow --multi --broadcast --verify --account deployer -vvvvv
 
@@ -25,6 +28,12 @@ verify-base-tool-contract:
 
 verify-optimism-tool-contract:
 	forge verify-contract --chain-id 11155420  $(ONFT_TOOL_ADDRESS) src/ONFTTool.sol:ONFTTool --constructor-args-path tool-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
+
+verify-base-gems-contract:
+	forge verify-contract --chain-id 84532 $(OFT_GEMS_ADDRESS) src/OFTGems.sol:OFTGems --constructor-args-path gems-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
+
+verify-optimism-gems-contract:
+	forge verify-contract --chain-id 11155420  $(OFT_GEMS_ADDRESS) src/OFTGems.sol:OFTGems --constructor-args-path gems-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
 
 # ======================
 # === PEER COMMANDS ===
