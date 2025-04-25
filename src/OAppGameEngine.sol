@@ -147,6 +147,18 @@ contract OAppGameEngine is OApp {
         }
     }
 
+    function _bridgeGems() internal {
+        // call send on OFTGems contract
+    }
+
+    function _bridgeCharacter() internal {
+        // call send on ONFTCharacter contract
+    }
+
+    function _bridgeTool() internal {
+        // call send on ONFTTool contract
+    }
+
     // ===============
     // === LZ SEND ===
     // ===============
