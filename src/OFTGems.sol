@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.22;
 
-import {OFT} from "lib/devtools/packages/oft-evm/contracts/OFT.sol";
+import {OFT} from "@layerzerolabs/oft-evm/contracts/OFT.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract OFTGems is OFT {

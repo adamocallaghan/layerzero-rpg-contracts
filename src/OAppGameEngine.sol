@@ -3,7 +3,7 @@ pragma solidity ^0.8.22;
 
 import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp/OApp.sol";
 import {IONFT721, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
-import {IOFT} from "lib/devtools/packages/oft-evm/contracts/interfaces/IOFT.sol";
+import {IOFT} from "@layerzerolabs/oft-evm/contracts/interfaces/IOFT.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import {IOFTGems, IONFTCharacter, IONFTTool} from "./interfaces/GameInterfaces.sol";
 import {AddressCast} from "../utils/AddressCast.sol";
