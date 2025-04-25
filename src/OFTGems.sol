@@ -13,9 +13,7 @@ contract OFT_Sepolia is OFT {
         string memory _symbol,
         address _lzEndpoint,
         address _delegate
-    ) OFT(_name, _symbol, _lzEndpoint, _delegate) {
-        _mint(msg.sender, 100 ether);
-    }
+    ) OFT(_name, _symbol, _lzEndpoint, _delegate) {}
 
     function setGameEngine(address _gameEngine) public {
         // @note: add onlyDelegate modifier

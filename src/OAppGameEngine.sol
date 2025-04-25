@@ -1,19 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import { OApp, Origin, MessagingFee } from "@layerzerolabs/oapp-evm/contracts/oapp/OApp.sol";
-import { IONFT721 } from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
-import { IOFT } from "lib/devtools/packages/oft-evm/contracts/interfaces/IOFT.sol";
+import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp/OApp.sol";
+import {IONFT721} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
+import {IOFT} from "lib/devtools/packages/oft-evm/contracts/interfaces/IOFT.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import {IOFTGems, IONFTCharacter, IONFTTool} from "./interfaces/GameInterfaces.sol";
 
-contract Vault is OApp {
+interface ILayerZeroEndpointV2 {
+    function eid() external view returns (uint32);
+}
+
+contract OAppGameEngine is OApp {
     // ====================
     // === STORAGE VARS ===
     // ====================
-
-    IOFT public gemsOFT;
-    IONFT721 public characterONFT;
-    IONFT721 public toolONFT;
+    
+    IONFTCharacter public characterONFT;
+    IONFTTool public toolONFT;
+    IOFTGems public gemsOFT;
 
     enum Level {
         Village,
@@ -26,7 +31,8 @@ contract Vault is OApp {
     // === ERRORS ===
     // ==============
 
-    error Error__NotEnoughTokensToMint();
+    error Error__NotEnoughGemsToMint(uint256 _playerGemsBalance);
+    error Error__ToolCannotBeMintedOnThisChain();
 
     // ==============
     // === EVENTS ===
@@ -34,59 +40,93 @@ contract Vault is OApp {
 
     event CharacterMinted(address, uint256);
     event ToolMinted(address, uint256);
+    event GemsMinted(address, uint256);
 
     // ===================
     // === CONSTRUCTOR ===
     // ===================
 
-    constructor(address _endpoint, address _delegate, address _characterContract, address _toolContract, address _gemsContract) OApp(_endpoint, _delegate) {
-        characterONFT = IONFT721(_characterContract);
-        toolONFT = IONFT721(_toolContract);
-        gemsOFT = IOFT(_gemsContract);
+    constructor(
+        address _endpoint,
+        address _delegate,
+        address _characterContract,
+        address _toolContract,
+        address _gemsContract
+    ) OApp(_endpoint, _delegate) {
+        characterONFT = IONFTCharacter(_characterContract);
+        toolONFT = IONFTTool(_toolContract);
+        gemsOFT = IOFTGems(_gemsContract);
     }
 
-    // ================================
-    // === SUPPLY ETH AS COLLATERAL ===
-    // ================================
+    // =================
+    // === MINT GEMS ===
+    // =================
 
-    function supply() public payable {
-        // update user's balance
-        userCollateral[msg.sender] += msg.value;
+    // @note: in a production level game we would protect this function and call it
+    // from a backend/server wallet or something like that. However, we're going
+    // to pretend here that our users *won't* interact with the contract directly
+    // to just mint a load of gems and will play the level to get them instead
 
-        emit EthCollateralSupplied(msg.sender, msg.value);
-    }
-
-    // ====================
-    // === WITHDRAW ETH ===
-    // ====================
-
-    function withdraw() public payable {
-        if (userCollateral[msg.sender] >= msg.value) {
-            // update user's balance
-            uint256 withdrawalAmount = msg.value;
-            userCollateral[msg.sender] -= msg.value;
-
-            // transfer ETH back to user
-            msg.sender.call{value: withdrawalAmount}("");
-
-            emit EthCollateralWithdrawn(msg.sender, withdrawalAmount);
-        } else {
-            revert Error__NoCollateralSupplied();
+    function mintGems(address _player, uint256 _amount) public {
+        if(_amount > 10) {
+            revert Error__TooManyGems();
         }
+        gemsOFT.mintGemsToPlayer(_player, _amount);
+        emit GemsMinted(_player, _amount);
+    }
+
+    // ======================
+    // === MINT CHARACTER ===
+    // ======================
+
+    function mintCharacter(address _player) public {
+        characterONFT.mintCharacterToPlayer(_player);
+        emit CharacterMinted(_player);
+    }
+
+    // =================
+    // === MINT TOOL ===
+    // =================
+
+    // @note: so, in order to mint the tool, we want our users to:
+    //          - have the full 10 gems from level 1
+    //          - have bridged over to Optimism Sepolia
+
+    function mintTool(address _player) public {
+        // get users gem balance
+        uint256 userGemsBalance = gemsOFT.balanceOf(_player);
+        if(userGemsBalance < 10) { // 10 == finished the level & can mint tool
+            revert Error__NotEnoughTokensToMint(userGemsBalance);
+        }
+        // @todo: burn the player's gems here
+        uint32 endpointID = ILayerZeroEndpointV2(_endpoint).eid(); // get the endpoint ID
+        if(endpointID != 40232) {
+            revert Error__ToolCannotBeMintedOnThisChain(); // tool can only be minted on Op Sepolia!
+        }
+        toolONFT.mintToolToPlayer(_player);
+        emit ToolMinted(_player);
     }
 
     // ===============
     // === LZ SEND ===
     // ===============
 
-    function send(uint32 _dstEid, uint256 _amount, address _recipient, uint8 _choice, bytes calldata _options)
-        external
-        payable
-        returns (MessagingReceipt memory receipt)
-    {
+    function send(
+        uint32 _dstEid,
+        uint256 _amount,
+        address _recipient,
+        uint8 _choice,
+        bytes calldata _options
+    ) external payable returns (MessagingReceipt memory receipt) {
         if (userCollateral[msg.sender] > 0) {
             bytes memory _payload = abi.encode(_amount, _recipient, _choice);
-            receipt = _lzSend(_dstEid, _payload, _options, MessagingFee(msg.value, 0), payable(msg.sender));
+            receipt = _lzSend(
+                _dstEid,
+                _payload,
+                _options,
+                MessagingFee(msg.value, 0),
+                payable(msg.sender)
+            );
         } else {
             revert Error__NoCollateralSupplied();
         }
@@ -100,10 +140,13 @@ contract Vault is OApp {
         Origin calldata _origin,
         bytes32 _guid,
         bytes calldata payload,
-        address, /*_executor*/
+        address /*_executor*/,
         bytes calldata /*_extraData*/
     ) internal override {
-        (uint256 amount, address recipient, uint8 choice) = abi.decode(payload, (uint256, address, uint8));
+        (uint256 amount, address recipient, uint8 choice) = abi.decode(
+            payload,
+            (uint256, address, uint8)
+        );
 
         // update tokensMinted on OAPP
         tokensMinted[recipient] += amount;
