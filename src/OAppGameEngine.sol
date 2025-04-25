@@ -7,6 +7,7 @@ import {IOFT} from "lib/devtools/packages/oft-evm/contracts/interfaces/IOFT.sol"
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import {IOFTGems, IONFTCharacter, IONFTTool} from "./interfaces/GameInterfaces.sol";
 import {AddressCast} from "../utils/AddressCast.sol";
+import { OptionsBuilder } from "@layerzerolabs/oapp-evm/contracts/oapp/libs/OptionsBuilder.sol";
 
 interface ILayerZeroEndpointV2 {
     function eid() external view returns (uint32);
@@ -22,7 +23,7 @@ struct OftSendParam {
     bytes oftCmd; // The OFT command to be executed, unused in default OFT implementations.
 }
 
-struct OnftSendParam {
+struct SendParam {
     uint32 dstEid; // Destination LayerZero EndpointV2 ID.
     bytes32 to; // Recipient address.
     uint256 tokenId;
@@ -66,7 +67,7 @@ contract OAppGameEngine is OApp {
     // ==============
 
     event CharacterMinted(address);
-    event ToolMinted(address, uint256);
+    event ToolMinted(address);
     event GemsMinted(address, uint256);
 
     // ===================
@@ -127,7 +128,7 @@ contract OAppGameEngine is OApp {
             revert Error__NotEnoughGemsToMint(userGemsBalance);
         }
         // @todo: burn the player's gems here
-        uint32 endpointID = ILayerZeroEndpointV2(this._endpoint).eid(); // get the endpoint ID
+        uint32 endpointID = endpoint.eid(); // get the endpoint ID
         if (endpointID != 40232) {
             revert Error__ToolCannotBeMintedOnThisChain(); // tool can only be minted on Op Sepolia!
         }
@@ -147,7 +148,7 @@ contract OAppGameEngine is OApp {
     //      - so they will have to play the Optimism level to get the 10 to bridge back
 
     function bridge() public {
-        uint32 endpointID = ILayerZeroEndpointV2(this._endpoint).eid(); // get the endpoint ID
+        uint32 endpointID = endpoint.eid(); // get the endpoint ID
         // ============
         // BASE SEPOLIA
         // ============
@@ -209,14 +210,14 @@ contract OAppGameEngine is OApp {
         _fee.lzTokenFee = 0;
 
         // call send on OFTGems contract
-        IOFT(gemsOFT).send(_sendParam, _fee, msg.sender);
+        IOFT(address(gemsOFT)).send(_sendParam, _fee, msg.sender);
     }
 
     function _bridgeCharacter(
         uint32 _destinationEndpointID,
         uint256 _tokenId
     ) internal {
-        OnftSendParam memory _sendParam;
+        SendParam memory _sendParam;
 
         _sendParam.dstEid = _destinationEndpointID;
         _sendParam.to = AddressCast.toBytes32(msg.sender);
@@ -224,21 +225,24 @@ contract OAppGameEngine is OApp {
         _sendParam
             .extraOptions = "0x00030100110100000000000000000000000000030d40";
         _sendParam.composeMsg = "0x";
-        _sendParam.oftCmd = "0x";
+        _sendParam.onftCmd = "0x";
 
         MessagingFee memory _fee;
         _fee.nativeFee = 10000000000000000;
         _fee.lzTokenFee = 0;
 
         // call send on ONFTCharacter contract
-        IONFT721(characterONFT).send(_sendParam, _fee, msg.sender);
+        IONFT721(address(characterONFT)).send(_sendParam, _fee, msg.sender);
     }
 
     function _bridgeTool(
         uint32 _destinationEndpointID,
         uint256 _tokenId
     ) internal {
-        OnftSendParam memory _sendParam;
+        bytes memory options = OptionsBuilder.newOptions().addExecutorLzReceiveOption(200000, 0);
+        SendParam memory testSendParam = SendParam(_destinationEndpointID, AddressCast.toBytes32(msg.sender), _tokenId, options, "", "");
+
+        SendParam memory _sendParam;
 
         _sendParam.dstEid = _destinationEndpointID;
         _sendParam.to = AddressCast.toBytes32(msg.sender);
@@ -246,14 +250,14 @@ contract OAppGameEngine is OApp {
         _sendParam
             .extraOptions = "0x00030100110100000000000000000000000000030d40";
         _sendParam.composeMsg = "0x";
-        _sendParam.oftCmd = "0x";
+        _sendParam.onftCmd = "0x";
 
         MessagingFee memory _fee;
         _fee.nativeFee = 10000000000000000;
         _fee.lzTokenFee = 0;
 
         // call send on ONFTTool contract
-        IONFT721(toolONFT).send(_sendParam, _fee, msg.sender);
+        IONFT721(address(toolONFT)).send(testSendParam, _fee, msg.sender);
     }
 
     function _lzReceive(
