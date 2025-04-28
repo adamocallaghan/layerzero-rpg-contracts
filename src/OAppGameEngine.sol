@@ -57,9 +57,9 @@ contract OAppGameEngine is OApp {
     event ToolMinted(address);
     event GemsMinted(address, uint256);
 
-    event HitFunctionOk(bytes32);
-    event FailingBeforeExternalCallToONFTCharacter(uint32,bytes32,uint256,bytes,bytes,bytes);
-    event EmittingAfterExternalCallToONFTCharacter(uint32,bytes32,uint256,bytes,bytes,bytes);
+    event HitFunctionOk();
+    event FailingBeforeExternalCallToONFTCharacter();
+    event EmittingAfterExternalCallToONFTCharacter();
 
     // ===================
     // === CONSTRUCTOR ===
@@ -148,12 +148,9 @@ contract OAppGameEngine is OApp {
     //      - so they will have to play the Optimism level to get the 10 to bridge back
 
     function bridge(
-        uint256 characterTokenId,
-        uint256 toolTokenId,
-        bytes memory _extraOptions,
-        bytes memory _composeMsg,
-        bytes memory _onftCmd,
-        bytes32 deployerBytes32Address
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress
     ) public payable {
         uint32 endpointID = lzEndpoint.eid(); // get the endpoint ID
         // ============
@@ -172,14 +169,11 @@ contract OAppGameEngine is OApp {
             // *** PASS THE OPPOSITE END EID - i.e. OP SEPOLIA! ***
             // _bridgeGems(40232, userGemsBalance);
             _bridgeCharacter(
-                40232,
-                characterTokenId,
-                _extraOptions,
-                _composeMsg,
-                _onftCmd,
-                deployerBytes32Address
+                _sendParam,
+                _fee,
+                _refundAddress
             );
-            emit HitFunctionOk(deployerBytes32Address);
+            emit HitFunctionOk();
             // ================
             // OPTIMISM SEPOLIA
             // ================
@@ -201,14 +195,11 @@ contract OAppGameEngine is OApp {
             // *** PASS THE OPPOSITE END EID - i.e. BASE SEPOLIA! ***
             _bridgeGems(40245, userGemsBalance);
             _bridgeCharacter(
-                40245,
-                characterTokenId,
-                _extraOptions,
-                _composeMsg,
-                _onftCmd,
-                deployerBytes32Address
+                _sendParam,
+                _fee,
+                _refundAddress
             );
-            _bridgeTool(40245, toolTokenId);
+            // _bridgeTool(40245, toolTokenId);
         }
     }
 
@@ -233,12 +224,9 @@ contract OAppGameEngine is OApp {
     }
 
     function _bridgeCharacter(
-        uint32 _destinationEndpointID,
-        uint256 _tokenId,
-        bytes memory _extraOptions,
-        bytes memory _composeMsg,
-        bytes memory _onftCmd,
-        bytes32 deployerBytes32Address
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress
     ) internal {
         // SendParam memory _sendParam;
 
@@ -249,27 +237,27 @@ contract OAppGameEngine is OApp {
         // _sendParam.composeMsg = _composeMsg;
         // _sendParam.onftCmd = _onftCmd;
 
-        MessagingFee memory _fee = MessagingFee(10000000000000000, 0);
-        // _fee.nativeFee = 10000000000000000;
-        // _fee.lzTokenFee = 0;
+        // MessagingFee memory _fee = MessagingFee(10000000000000000, 0);
+        // // _fee.nativeFee = 10000000000000000;
+        // // _fee.lzTokenFee = 0;
 
-        // bytes32 deployerBytes32Address = "0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f";
-        SendParam memory _sendParam = SendParam(
-            _destinationEndpointID,
-            // AddressCast.toBytes32(msg.sender),
-            deployerBytes32Address,
-            _tokenId,
-            _extraOptions,
-            _composeMsg,
-            _onftCmd
-        );
+        // // bytes32 deployerBytes32Address = "0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f";
+        // SendParam memory _sendParam = SendParam(
+        //     _destinationEndpointID,
+        //     // AddressCast.toBytes32(msg.sender),
+        //     deployerBytes32Address,
+        //     _tokenId,
+        //     _extraOptions,
+        //     _composeMsg,
+        //     _onftCmd
+        // );
 
         // emit FailingBeforeExternalCallToONFTCharacter(_destinationEndpointID,deployerBytes32Address,_tokenId,_extraOptions,_composeMsg,_onftCmd);
 
         // call send on ONFTCharacter contract
         IONFT721(address(characterONFT)).send{value:msg.value}(_sendParam, _fee, msg.sender);
 
-        emit EmittingAfterExternalCallToONFTCharacter(_destinationEndpointID,deployerBytes32Address,_tokenId,_extraOptions,_composeMsg,_onftCmd);
+        emit EmittingAfterExternalCallToONFTCharacter();
     }
 
     function _bridgeTool(
