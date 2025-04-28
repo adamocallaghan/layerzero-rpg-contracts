@@ -24,7 +24,7 @@ contract DeployOAppGameEngine is Script {
         // ONFT character & tool addresses for OAPP constructor
         address ONFT_CHARACTER_ADDRESS = vm.envAddress("ONFT_CHARACTER_ADDRESS");
         address ONFT_TOOL_ADDRESS = vm.envAddress("ONFT_TOOL_ADDRESS");
-        address OFT_GEMS_ADDRESS = address(0); // *** we'lll sort gems again ***
+        address OFT_GEMS_ADDRESS = vm.envAddress("OAPP_GAME_ENGINE_ADDRESS");
         
         // ========================
         // === BASE DEPLOYMENTS ===
@@ -39,7 +39,7 @@ contract DeployOAppGameEngine is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OAPP
-        OAppGameEngine baseOapp = new OAppGameEngine{salt: "fox"}(
+        OAppGameEngine baseOapp = new OAppGameEngine{salt: "rabbit"}(
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
             ONFT_CHARACTER_ADDRESS,
@@ -63,7 +63,7 @@ contract DeployOAppGameEngine is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OAPP
-        OAppGameEngine optimismOapp = new OAppGameEngine{salt: "fox"}(
+        OAppGameEngine optimismOapp = new OAppGameEngine{salt: "rabbit"}(
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
             ONFT_CHARACTER_ADDRESS,

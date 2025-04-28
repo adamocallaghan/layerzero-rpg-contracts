@@ -64,6 +64,9 @@ mint-character-from-game-engine:
 mint-character-on-base:
 	cast send $(ONFT_CHARACTER_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
+mint-tool-from-game-engine: # requires you to have 10 gems
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "mintTool(address)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
+
 mint-tool-on-base:
 	cast send $(ONFT_TOOL_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
@@ -78,6 +81,16 @@ get-your-base-tool-balance:
 
 get-your-optimism-tool-balance:
 	cast call $(ONFT_TOOL_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC)
+
+# ==========================
+# === GEMS - MINT DIRECT ===
+# ==========================
+
+mint-gems-to-user:
+	cast send $(OFT_GEMS_ADDRESS) "mintGemsToPlayer(address,uint256)" $(DEPLOYER_PUBLIC_ADDRESS) 10 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer
+
+get-your-base-gems-balance:
+	cast call $(OFT_GEMS_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC)
 
 # =================
 # === SEND ONFT ===
