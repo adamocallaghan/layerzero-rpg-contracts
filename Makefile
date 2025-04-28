@@ -5,8 +5,8 @@
 
 # NOTE: if you are *re-deploying* the contracts make sure to change the 'salt' in the DeployONFTCharacter script
 
-deploy-character-multichain:
-	forge script script/DeployONFTCharacter.s.sol:DeployONFTCharacter --slow --multi --broadcast --verify --account deployer -vvvvv
+deploy-character-multichain: # trying to verify with Etherscan here
+	forge script script/DeployONFTCharacter.s.sol:DeployONFTCharacter --slow --multi --broadcast --verify  --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
 
 deploy-tool-multichain:
 	forge script script/DeployONFTTool.s.sol:DeployONFTTool --slow --multi --broadcast --verify --account deployer -vvvvv
@@ -15,7 +15,7 @@ deploy-gems-multichain:
 	forge script script/DeployOFTGems.s.sol:DeployOFTGems --slow --multi --broadcast --verify --account deployer -vvvvv
 
 deploy-game-engine-multichain:
-	forge script script/DeployOAppGameEngine.s.sol:DeployOAppGameEngine --slow --multi --broadcast --verify --account deployer -vvvvv
+	forge script script/DeployOAppGameEngine.s.sol:DeployOAppGameEngine --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
 
 verify-base-character-contract:
 	forge verify-contract --chain-id 84532 $(ONFT_CHARACTER_ADDRESS) src/ONFTCharacter.sol:ONFTCharacter --constructor-args-path character-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
@@ -64,8 +64,8 @@ mint-character-from-game-engine:
 mint-character-on-base:
 	cast send $(ONFT_CHARACTER_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
-mint-tool-from-game-engine: # requires you to have 10 gems
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "mintTool(address)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
+mint-tool-from-game-engine-on-optimism: # requires you to have 10 gems & only available on optimism sepolia
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "mintTool(address)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer -vvvvv
 
 mint-tool-on-base:
 	cast send $(ONFT_TOOL_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
@@ -86,18 +86,37 @@ get-your-optimism-tool-balance:
 # === GEMS - MINT DIRECT ===
 # ==========================
 
-mint-gems-to-user:
+mint-gems-to-user-on-base:
 	cast send $(OFT_GEMS_ADDRESS) "mintGemsToPlayer(address,uint256)" $(DEPLOYER_PUBLIC_ADDRESS) 10 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer
 
 get-your-base-gems-balance:
 	cast call $(OFT_GEMS_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC)
 
+mint-gems-to-user-on-optimism:
+	cast send $(OFT_GEMS_ADDRESS) "mintGemsToPlayer(address,uint256)" $(DEPLOYER_PUBLIC_ADDRESS) 10 --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer
+
+get-your-optimism-gems-balance:
+	cast call $(OFT_GEMS_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC)
+
+# ==============
+# === BRIDGE ===
+# ==============
+
+bridge-character-and-gems-from-base-to-optimism: # requires you to have 10 gems
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridge(uint256,uint256)" 1 0 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer
+
+bridge-character-and-gems-from-base-to-optimism-with-bytes: # requires you to have 10 gems
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridge(uint256,uint256,bytes,bytes,bytes,bytes32)" 1 0 $(MESSAGE_OPTIONS_BYTES) 0x 0x $(DEPLOYER_BYTES32_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer
+
+send-character-from-base-to-optimism-via-test-bridge-function:
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridge((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,1,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+
 # =================
 # === SEND ONFT ===
 # =================
 
-# approve-onft:
-# 	cast send $(ONFT_ADDRESS) "approve(address,uint256)" $(ONFT_ADDRESS) 1 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
+approve-oapp-to-bridge-onft-character-on-base:
+	cast send $(ONFT_CHARACTER_ADDRESS) "approve(address,uint256)" $(OAPP_GAME_ENGINE_ADDRESS) 0 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
 get-character-quote-on-base:
 	cast call $(ONFT_CHARACTER_ADDRESS) "quoteSend((uint32,bytes32,uint256,bytes,bytes,bytes),bool)(uint256,uint256)" "($(OPTIMISM_SEPOLIA_LZ_ENDPOINT_ID),$(DEPLOYER_BYTES32_ADDRESS),1,$(MESSAGE_OPTIONS_BYTES),0x,0x)" false --rpc-url $(BASE_SEPOLIA_RPC)

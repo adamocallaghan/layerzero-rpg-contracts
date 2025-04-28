@@ -3,6 +3,8 @@ pragma solidity ^0.8.22;
 // ONFT721
 // import {ONFT721Enumerable} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721Enumerable.sol";
 import {ONFT721} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721.sol";
+import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp/OApp.sol";
+import {IONFT721, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
 
 contract ONFTCharacter is ONFT721 {
     // Game Engine Contract
@@ -31,5 +33,34 @@ contract ONFTCharacter is ONFT721 {
         // @note: add onlyGameEngine modifier
         _mint(_player, mintCount);
         mintCount++;
+    }
+
+    function send(
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress
+    ) external payable override returns (MessagingReceipt memory msgReceipt) {
+        // Use _refundAddress (EOA) as the sender in _debit()
+        _debit(_refundAddress, _sendParam.tokenId, _sendParam.dstEid);
+
+        (bytes memory message, bytes memory options) = _buildMsgAndOptions(
+            _sendParam
+        );
+
+        // Send the message via LayerZero
+        msgReceipt = _lzSend(
+            _sendParam.dstEid,
+            message,
+            options,
+            _fee,
+            _refundAddress
+        );
+
+        emit ONFTSent(
+            msgReceipt.guid,
+            _sendParam.dstEid,
+            _refundAddress,
+            _sendParam.tokenId
+        );
     }
 }

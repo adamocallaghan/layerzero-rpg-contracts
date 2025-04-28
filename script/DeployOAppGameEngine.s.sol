@@ -24,7 +24,7 @@ contract DeployOAppGameEngine is Script {
         // ONFT character & tool addresses for OAPP constructor
         address ONFT_CHARACTER_ADDRESS = vm.envAddress("ONFT_CHARACTER_ADDRESS");
         address ONFT_TOOL_ADDRESS = vm.envAddress("ONFT_TOOL_ADDRESS");
-        address OFT_GEMS_ADDRESS = vm.envAddress("OAPP_GAME_ENGINE_ADDRESS");
+        address OFT_GEMS_ADDRESS = vm.envAddress("OFT_GEMS_ADDRESS");
         
         // ========================
         // === BASE DEPLOYMENTS ===
