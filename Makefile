@@ -9,10 +9,10 @@ deploy-character-multichain: # trying to verify with Etherscan here
 	forge script script/DeployONFTCharacter.s.sol:DeployONFTCharacter --slow --multi --broadcast --verify  --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
 
 deploy-tool-multichain:
-	forge script script/DeployONFTTool.s.sol:DeployONFTTool --slow --multi --broadcast --verify --account deployer -vvvvv
+	forge script script/DeployONFTTool.s.sol:DeployONFTTool --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
 
 deploy-gems-multichain:
-	forge script script/DeployOFTGems.s.sol:DeployOFTGems --slow --multi --broadcast --verify --account deployer -vvvvv
+	forge script script/DeployOFTGems.s.sol:DeployOFTGems --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
 
 deploy-game-engine-multichain:
 	forge script script/DeployOAppGameEngine.s.sol:DeployOAppGameEngine --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
@@ -70,6 +70,12 @@ mint-tool-from-game-engine-on-optimism: # requires you to have 10 gems & only av
 mint-tool-on-base:
 	cast send $(ONFT_TOOL_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
+get-owner-of-tool-by-id-on-base:
+	cast call $(ONFT_TOOL_ADDRESS) "ownerOf(uint256)(address)" 6 --rpc-url $(BASE_SEPOLIA_RPC)
+
+get-owner-of-character-by-id-on-base:
+	cast call $(ONFT_CHARACTER_ADDRESS) "ownerOf(uint256)(address)" 6 --rpc-url $(BASE_SEPOLIA_RPC)
+
 get-your-base-character-balance:
 	cast call $(ONFT_CHARACTER_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC)
 
@@ -110,10 +116,20 @@ bridge-character-and-gems-from-base-to-optimism-with-bytes: # requires you to ha
 
 # command working to send onft from base => optimism using bridge() and _bridgeCharacter()
 send-character-from-base-to-optimism-via-main-bridge-function:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridge((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,4,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridge((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,5,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
+# testBridge() just sends direct in one function, no call to internal _bridgeCharacter() function, etc.
 send-character-from-base-to-optimism-via-test-bridge-function:
 	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridge((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,1,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+
+# bridgeMulti() tries to bridge both the character & tool in one tx...
+# for now make sure the character & tool have THE SAME tokenId (will fix once it's working!)
+send-character-from-base-to-optimism-via-bridge-multi-function:
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMulti((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,6,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
+
+# bridgeToolDirect() just calls the internal _bridgeTool() function
+send-tool-from-base-to-optimism-via-bridge-tool-direct:
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeToolDirect((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,6,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
 # =================
 # === SEND ONFT ===

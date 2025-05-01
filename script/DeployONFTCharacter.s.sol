@@ -37,14 +37,14 @@ contract DeployONFTCharacter is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTCharacter baseONFT = new ONFTCharacter{salt: "badger"}(
+        ONFTCharacter baseONFT = new ONFTCharacter{salt: "wolves"}(
             ONFT_CHARACTER_NAME,
             ONFT_CHARACTER_SYMBOL,
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS) // owner
         );
         console2.log("Our ONFT Character contract on Base is deployed to: ", address(baseONFT));
-
+        
         vm.stopBroadcast();
 
         // ============================
@@ -60,7 +60,7 @@ contract DeployONFTCharacter is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTCharacter optimismONFT = new ONFTCharacter{salt: "badger"}(
+        ONFTCharacter optimismONFT = new ONFTCharacter{salt: "wolves"}(
             ONFT_CHARACTER_NAME,
             ONFT_CHARACTER_SYMBOL,
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint

@@ -62,6 +62,8 @@ contract OAppGameEngine is OApp {
     event CharacterBridged();
     event ToolBridged();
 
+    event HitFunctionOk();
+
     // ===================
     // === CONSTRUCTOR ===
     // ===================
@@ -206,9 +208,9 @@ contract OAppGameEngine is OApp {
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
             _bridgeTool(_sendParam, _fee, _refundAddress);
             emit BaseToOpHitOk();
-        // ================
-        // OPTIMISM SEPOLIA
-        // ================
+            // ================
+            // OPTIMISM SEPOLIA
+            // ================
         } else if (endpointID == 40232) {
             // _bridgeGems(40245, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
@@ -231,7 +233,7 @@ contract OAppGameEngine is OApp {
         address _refundAddress
     ) internal {
         // call send on ONFTCharacter contract
-        IONFT721(address(characterONFT)).send{value: msg.value}(
+        IONFT721(address(characterONFT)).send{value: _fee.nativeFee}(
             _sendParam,
             _fee,
             _refundAddress
@@ -240,13 +242,21 @@ contract OAppGameEngine is OApp {
         emit CharacterBridged();
     }
 
+    function bridgeToolDirect(
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress
+    ) public payable {
+        _bridgeTool(_sendParam, _fee, _refundAddress);
+    }
+
     function _bridgeTool(
         SendParam calldata _sendParam,
         MessagingFee calldata _fee,
         address _refundAddress
     ) internal {
         // call send on ONFTTool contract
-        IONFT721(address(toolONFT)).send{value: msg.value}(
+        IONFT721(address(toolONFT)).send{value: _fee.nativeFee}(
             _sendParam,
             _fee,
             _refundAddress
