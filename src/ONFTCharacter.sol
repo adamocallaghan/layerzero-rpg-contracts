@@ -17,7 +17,11 @@ contract ONFTCharacter is ONFT721 {
         string memory _symbol,
         address _lzEndpoint,
         address _delegate
-    ) ONFT721(_name, _symbol, _lzEndpoint, _delegate) {}
+    ) ONFT721(_name, _symbol, _lzEndpoint, _delegate) {
+        for(uint256 i; i < 20; i++) {
+            _mint(_delegate, i);
+        }
+    }
 
     function mint() public {
         _mint(msg.sender, mintCount);

@@ -37,7 +37,7 @@ contract DeployOFTGems is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OFT
-        OFTGems baseOFT = new OFTGems{salt: "wolves"}(
+        OFTGems baseOFT = new OFTGems{salt: "rooster"}(
             OFT_GEMS_NAME,
             OFT_GEMS_SYMBOL,
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
@@ -60,7 +60,7 @@ contract DeployOFTGems is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OFT
-        OFTGems optimismOFT = new OFTGems{salt: "wolves"}(
+        OFTGems optimismOFT = new OFTGems{salt: "rooster"}(
             OFT_GEMS_NAME,
             OFT_GEMS_SYMBOL,
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint
