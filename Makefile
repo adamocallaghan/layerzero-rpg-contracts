@@ -116,7 +116,7 @@ bridge-character-and-gems-from-base-to-optimism-with-bytes: # requires you to ha
 
 # command working to send onft from base => optimism using bridge() and _bridgeCharacter()
 send-character-from-base-to-optimism-via-main-bridge-function:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridge((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,5,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridge((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,2,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
 # testBridge() just sends direct in one function, no call to internal _bridgeCharacter() function, etc.
 send-character-from-base-to-optimism-via-test-bridge-function:
