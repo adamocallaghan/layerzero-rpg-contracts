@@ -36,9 +36,17 @@ send-character-from-base-to-optimism-via-main-bridge-function:
 send-character-from-base-to-optimism-via-bridge-multi-function:
 	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMulti((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,6,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
 
-# bridgeToolDirect() just calls the internal _bridgeTool() function
+# =================================================================================
+# === bridgeToolDirect: calls our internal _bridgeTool() function and that's it ===
+# =================================================================================
+
+# bridgeToolDirect: Base => Optimism
 send-tool-from-base-to-optimism-via-bridge-tool-direct:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeToolDirect((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,1,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeToolDirect((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,2,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+
+send-tool-from-optimism-to-base-via-bridge-tool-direct:
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeToolDirect((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40245,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,2,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer --value 0.01ether
+
 # =========================================
 # testBridgeTool & testBridgeCharacter:
 # these functions on our OAPP just call the

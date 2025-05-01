@@ -18,8 +18,15 @@ contract ONFTTool is ONFT721 {
         address _lzEndpoint,
         address _delegate
     ) ONFT721(_name, _symbol, _lzEndpoint, _delegate) {
-        for(uint256 i; i < 20; i++) {
-            _mint(_delegate, i);
+        uint32 endpointID = lzEndpoint.eid(); // get the endpoint ID
+        if (endpointID == 40245) {
+            for (uint256 i = 20; i < 30; i++) {
+                _mint(_delegate, i);
+            }
+        } else if (endpointID == 40232) {
+            for (uint256 i = 30; i < 40; i++) {
+                _mint(_delegate, i);
+            }
         }
     }
 
