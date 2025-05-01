@@ -37,7 +37,7 @@ contract DeployONFTTool is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTTool baseONFT = new ONFTTool{salt: "dolphin"}(
+        ONFTTool baseONFT = new ONFTTool{salt: "elephant"}(
             ONFT_TOOL_NAME,
             ONFT_TOOL_SYMBOL,
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
@@ -60,7 +60,7 @@ contract DeployONFTTool is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTTool optimismONFT = new ONFTTool{salt: "dolphin"}(
+        ONFTTool optimismONFT = new ONFTTool{salt: "elephant"}(
             ONFT_TOOL_NAME,
             ONFT_TOOL_SYMBOL,
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint

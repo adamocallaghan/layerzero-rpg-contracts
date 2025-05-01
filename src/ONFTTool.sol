@@ -6,6 +6,10 @@ import {ONFT721} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721.sol";
 import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp/OApp.sol";
 import {IONFT721, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
 
+interface ILayerZeroEndpointV2 {
+    function eid() external view returns (uint32);
+}
+
 contract ONFTTool is ONFT721 {
     // Game Engine Contract
     address public gameEngine;
@@ -18,13 +22,13 @@ contract ONFTTool is ONFT721 {
         address _lzEndpoint,
         address _delegate
     ) ONFT721(_name, _symbol, _lzEndpoint, _delegate) {
-        uint32 endpointID = lzEndpoint.eid(); // get the endpoint ID
+        uint32 endpointID = ILayerZeroEndpointV2(_lzEndpoint).eid(); // get the endpoint ID
         if (endpointID == 40245) {
-            for (uint256 i = 20; i < 30; i++) {
+            for (uint256 i = 0; i < 15; i++) {
                 _mint(_delegate, i);
             }
         } else if (endpointID == 40232) {
-            for (uint256 i = 30; i < 40; i++) {
+            for (uint256 i = 15; i < 30; i++) {
                 _mint(_delegate, i);
             }
         }
