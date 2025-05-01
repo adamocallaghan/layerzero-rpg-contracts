@@ -27,14 +27,19 @@ sanity-check:
 # === BRIDGE ===
 # ==============
 
-# command working to send onft from base => optimism using bridge() and _bridgeCharacter()
+# bridge:
+# - checks eid of chain
+# - if user is on Base and has 10 gems
+# ...it bridges their character over to Optimism
 send-character-from-base-to-optimism-via-main-bridge-function:
 	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridge((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,12,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
-# bridgeMulti() tries to bridge both the character & tool in one tx...
-# for now make sure the character & tool have THE SAME tokenId (will fix once it's working!)
+# bridgeMulti:
+# - checks the eid of chain
+# - bridges both the character & tool across
+# - for now make sure the character & tool have THE SAME tokenId (I will fix this shortly!)
 send-character-from-base-to-optimism-via-bridge-multi-function:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMulti((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,6,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMulti((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,0,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
 
 # =================================================================================
 # === bridgeToolDirect: calls our internal _bridgeTool() function and that's it ===

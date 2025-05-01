@@ -43,15 +43,15 @@ contract SanityCheck is Script {
         // vm.startBroadcast(deployerPrivateKey);
 
         // Character balance/owner checks...
-        address ownerOfCharacterIndexZero = IONFT(ONFT_CHARACTER_ADDRESS).ownerOf(11);
+        address ownerOfCharacterIndexZero = IONFT(ONFT_CHARACTER_ADDRESS).ownerOf(0);
         if(ownerOfCharacterIndexZero == DEPLOYER_PUBLIC_ADDRESS) {
-            console2.log("YES - OUR DEPLOYER ACCOUNT OWNS THE CHARACTER AT INDEX 11");
+            console2.log("YES - OUR DEPLOYER ACCOUNT OWNS THE CHARACTER AT INDEX ZERO");
         }
 
         // Tool balance/owner checks...
-        address ownerOfToolIndexZero = IONFT(ONFT_TOOL_ADDRESS).ownerOf(22);
+        address ownerOfToolIndexZero = IONFT(ONFT_TOOL_ADDRESS).ownerOf(0);
         if(ownerOfToolIndexZero == DEPLOYER_PUBLIC_ADDRESS) {
-            console2.log("YES - OUR DEPLOYER ACCOUNT OWNS THE TOOL AT INDEX 22");
+            console2.log("YES - OUR DEPLOYER ACCOUNT OWNS THE TOOL AT INDEX ZERO");
         }
 
         // Gems balance/owner checks...
