@@ -135,12 +135,24 @@ contract OAppGameEngine is OApp {
     // === BRIDGE ===
     // ==============
 
-    function testBridge(
+    function testBridgeCharacter(
         SendParam calldata _sendParam,
         MessagingFee calldata _fee,
         address _refundAddress
     ) external payable {
         IONFT721(address(characterONFT)).send{value: msg.value}(
+            _sendParam,
+            _fee,
+            _refundAddress
+        );
+    }
+
+    function testBridgeTool(
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress
+    ) external payable {
+        IONFT721(address(toolONFT)).send{value: msg.value}(
             _sendParam,
             _fee,
             _refundAddress

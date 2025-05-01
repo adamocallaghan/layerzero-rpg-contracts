@@ -35,4 +35,33 @@ contract ONFTTool is ONFT721 {
         _mint(_player, mintCount);
         mintCount++;
     }
+
+    function send(
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress
+    ) external payable override returns (MessagingReceipt memory msgReceipt) {
+        // Use _refundAddress (EOA) as the sender in _debit()
+        _debit(_refundAddress, _sendParam.tokenId, _sendParam.dstEid);
+
+        (bytes memory message, bytes memory options) = _buildMsgAndOptions(
+            _sendParam
+        );
+
+        // Send the message via LayerZero
+        msgReceipt = _lzSend(
+            _sendParam.dstEid,
+            message,
+            options,
+            _fee,
+            _refundAddress
+        );
+
+        emit ONFTSent(
+            msgReceipt.guid,
+            _sendParam.dstEid,
+            _refundAddress,
+            _sendParam.tokenId
+        );
+    }
 }
