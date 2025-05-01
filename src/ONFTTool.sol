@@ -3,6 +3,8 @@ pragma solidity ^0.8.22;
 
 // import {ONFT721Enumerable} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721Enumerable.sol";
 import {ONFT721} from "@layerzerolabs/onft-evm/contracts/onft721/ONFT721.sol";
+import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp/OApp.sol";
+import {IONFT721, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
 
 contract ONFTTool is ONFT721 {
     // Game Engine Contract

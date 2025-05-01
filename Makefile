@@ -17,23 +17,26 @@ deploy-gems-multichain:
 deploy-game-engine-multichain:
 	forge script script/DeployOAppGameEngine.s.sol:DeployOAppGameEngine --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
 
-verify-base-character-contract:
-	forge verify-contract --chain-id 84532 $(ONFT_CHARACTER_ADDRESS) src/ONFTCharacter.sol:ONFTCharacter --constructor-args-path character-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
+sanity-check:
+	forge script script/SanityCheck.s.sol:SanityCheck --broadcast --account deployer -vvvvv
 
-verify-optimism-character-contract:
-	forge verify-contract --chain-id 11155420  $(ONFT_CHARACTER_ADDRESS) src/ONFTCharacter.sol:ONFTCharacter --constructor-args-path character-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
+# verify-base-character-contract:
+# 	forge verify-contract --chain-id 84532 $(ONFT_CHARACTER_ADDRESS) src/ONFTCharacter.sol:ONFTCharacter --constructor-args-path character-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
 
-verify-base-tool-contract:
-	forge verify-contract --chain-id 84532 $(ONFT_TOOL_ADDRESS) src/ONFTTool.sol:ONFTTool --constructor-args-path tool-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
+# verify-optimism-character-contract:
+# 	forge verify-contract --chain-id 11155420  $(ONFT_CHARACTER_ADDRESS) src/ONFTCharacter.sol:ONFTCharacter --constructor-args-path character-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
 
-verify-optimism-tool-contract:
-	forge verify-contract --chain-id 11155420  $(ONFT_TOOL_ADDRESS) src/ONFTTool.sol:ONFTTool --constructor-args-path tool-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
+# verify-base-tool-contract:
+# 	forge verify-contract --chain-id 84532 $(ONFT_TOOL_ADDRESS) src/ONFTTool.sol:ONFTTool --constructor-args-path tool-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
 
-verify-base-gems-contract:
-	forge verify-contract --chain-id 84532 $(OFT_GEMS_ADDRESS) src/OFTGems.sol:OFTGems --constructor-args-path gems-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
+# verify-optimism-tool-contract:
+# 	forge verify-contract --chain-id 11155420  $(ONFT_TOOL_ADDRESS) src/ONFTTool.sol:ONFTTool --constructor-args-path tool-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
 
-verify-optimism-gems-contract:
-	forge verify-contract --chain-id 11155420  $(OFT_GEMS_ADDRESS) src/OFTGems.sol:OFTGems --constructor-args-path gems-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
+# verify-base-gems-contract:
+# 	forge verify-contract --chain-id 84532 $(OFT_GEMS_ADDRESS) src/OFTGems.sol:OFTGems --constructor-args-path gems-constructor-args.txt --etherscan-api-key $(BASE_ETHERSCAN_API_KEY)
+
+# verify-optimism-gems-contract:
+# 	forge verify-contract --chain-id 11155420  $(OFT_GEMS_ADDRESS) src/OFTGems.sol:OFTGems --constructor-args-path gems-constructor-args.txt --etherscan-api-key $(OPTIMISM_ETHERSCAN_API_KEY)
 
 # ======================
 # === PEER COMMANDS ===
