@@ -290,9 +290,11 @@ contract OAppGameEngine is OApp {
         address _refundAddress,
         uint256 _toolTokenId
     ) internal {
+        SendParam memory _toolSendParam = _sendParam;
+        _toolSendParam.tokenId = _toolTokenId;
         // call send on ONFTTool contract
         IONFT721(address(toolONFT)).send{value: _fee.nativeFee}(
-            _sendParam,
+            _toolSendParam,
             _fee,
             _refundAddress
         );
