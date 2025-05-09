@@ -219,7 +219,36 @@ contract OAppGameEngine is OApp {
         } else if (endpointID == 40232) {
             // _bridgeGems(40245, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
-            _bridgeTool(_sendParam, _fee, _refundAddress);
+            _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
+            emit OpToBaseHitOk();
+        }
+    }
+
+    // @note: add in the gems logic, etc., and make this the main function
+    // @todo: we want to pass in our Tool tokenId and change the _sendParam to _sendCharacterParam & _sendToolParam
+    // otherwise the character & tool need to be the same tokenId, which is absurd!
+    function bridgeMultiWithTokenIds(
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress,
+        uint256 _toolTokenId
+    ) public payable {
+        uint32 endpointID = lzEndpoint.eid(); // get the endpoint ID
+        // ============
+        // BASE SEPOLIA
+        // ============
+        if (endpointID == 40245) {
+            // _bridgeGems(40232, userGemsBalance);
+            _bridgeCharacter(_sendParam, _fee, _refundAddress);
+            _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId); // @todo: pass _toolTokenId over (need to change the internal function itself as well as wherever you are calling it in this contract)
+            emit BaseToOpHitOk();
+            // ================
+            // OPTIMISM SEPOLIA
+            // ================
+        } else if (endpointID == 40232) {
+            // _bridgeGems(40245, userGemsBalance);
+            _bridgeCharacter(_sendParam, _fee, _refundAddress);
+            _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
             emit OpToBaseHitOk();
         }
     }
@@ -252,13 +281,14 @@ contract OAppGameEngine is OApp {
         MessagingFee calldata _fee,
         address _refundAddress
     ) public payable {
-        _bridgeTool(_sendParam, _fee, _refundAddress);
+        _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
     }
 
     function _bridgeTool(
         SendParam calldata _sendParam,
         MessagingFee calldata _fee,
-        address _refundAddress
+        address _refundAddress,
+        uint256 _toolTokenId
     ) internal {
         // call send on ONFTTool contract
         IONFT721(address(toolONFT)).send{value: _fee.nativeFee}(
