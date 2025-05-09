@@ -5,23 +5,13 @@ import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp
 import {IONFT721, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
 import {IOFT} from "@layerzerolabs/oft-evm/contracts/interfaces/IOFT.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import {IOFTGems, IONFTCharacter, IONFTTool} from "./interfaces/GameInterfaces.sol";
+import {IOFTGems, IONFTCharacter, IONFTTool, OftSendParam} from "./interfaces/GameInterfaces.sol";
 import {AddressCast} from "../utils/AddressCast.sol";
 // import { OptionsBuilder } from "@layerzerolabs/oapp-evm/contracts/oapp/libs/OptionsBuilder.sol";
 
 interface ILayerZeroEndpointV2 {
     function eid() external view returns (uint32);
 }
-
-// struct OftSendParam {
-//     uint32 dstEid; // Destination endpoint ID.
-//     bytes32 to; // Recipient address.
-//     uint256 amountLD; // Amount to send in local decimals.
-//     uint256 minAmountLD; // Minimum amount to send in local decimals.
-//     bytes extraOptions; // Additional options supplied by the caller to be used in the LayerZero message.
-//     bytes composeMsg; // The composed message for the send() operation.
-//     bytes oftCmd; // The OFT command to be executed, unused in default OFT implementations.
-// }
 
 contract OAppGameEngine is OApp {
     // ====================
@@ -206,6 +196,9 @@ contract OAppGameEngine is OApp {
         }
     }
 
+    // @note: add in the gems logic, etc., and make this the main function
+    // @todo: we want to pass in our Tool tokenId and change the _sendParam to _sendCharacterParam & _sendToolParam
+    // otherwise the character & tool need to be the same tokenId, which is absurd!
     function bridgeMulti(
         SendParam calldata _sendParam,
         MessagingFee calldata _fee,
