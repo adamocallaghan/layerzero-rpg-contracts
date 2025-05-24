@@ -211,7 +211,7 @@ contract OAppGameEngine is OApp {
         if (endpointID == 40245) {
             // _bridgeGems(40232, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
-            _bridgeTool(_sendParam, _fee, _refundAddress);
+            // _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
             emit BaseToOpHitOk();
             // ================
             // OPTIMISM SEPOLIA
@@ -219,7 +219,7 @@ contract OAppGameEngine is OApp {
         } else if (endpointID == 40232) {
             // _bridgeGems(40245, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
-            _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
+            // _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
             emit OpToBaseHitOk();
         }
     }
@@ -281,7 +281,7 @@ contract OAppGameEngine is OApp {
         MessagingFee calldata _fee,
         address _refundAddress
     ) public payable {
-        _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
+        // _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
     }
 
     function _bridgeTool(

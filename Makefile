@@ -46,7 +46,7 @@ send-character-from-base-to-optimism-via-bridge-multi-function:
 # - bridges both the character & tool across
 # - character tokenId is taken from the SendParam, tool tokenId is passed in separately
 send-character-from-base-to-optimism-via-bridge-multi-function-with-token-ids:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMultiWithTokenIds((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,14,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) 15 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMultiWithTokenIds((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address,uint256)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,8,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) 9 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
 
 # =================================================================================
 # === bridgeToolDirect: calls our internal _bridgeTool() function and that's it ===
@@ -145,16 +145,16 @@ mint-tool-on-base:
 	cast send $(ONFT_TOOL_ADDRESS) "mint()" --rpc-url $(BASE_SEPOLIA_RPC) --account deployer -vvvvv
 
 get-owner-of-tool-by-id-on-base:
-	cast call $(ONFT_TOOL_ADDRESS) "ownerOf(uint256)(address)" 11 --rpc-url $(BASE_SEPOLIA_RPC)
+	cast call $(ONFT_TOOL_ADDRESS) "ownerOf(uint256)(address)" 9 --rpc-url $(BASE_SEPOLIA_RPC)
 
 get-owner-of-character-by-id-on-base:
-	cast call $(ONFT_CHARACTER_ADDRESS) "ownerOf(uint256)(address)" 14 --rpc-url $(BASE_SEPOLIA_RPC)
+	cast call $(ONFT_CHARACTER_ADDRESS) "ownerOf(uint256)(address)" 8 --rpc-url $(BASE_SEPOLIA_RPC)
 
 get-owner-of-tool-by-id-on-optimism:
-	cast call $(ONFT_TOOL_ADDRESS) "ownerOf(uint256)(address)" 11 --rpc-url $(OPTIMISM_SEPOLIA_RPC)
+	cast call $(ONFT_TOOL_ADDRESS) "ownerOf(uint256)(address)" 9 --rpc-url $(OPTIMISM_SEPOLIA_RPC)
 
 get-owner-of-character-by-id-on-optimism:
-	cast call $(ONFT_CHARACTER_ADDRESS) "ownerOf(uint256)(address)" 14 --rpc-url $(OPTIMISM_SEPOLIA_RPC)
+	cast call $(ONFT_CHARACTER_ADDRESS) "ownerOf(uint256)(address)" 8 --rpc-url $(OPTIMISM_SEPOLIA_RPC)
 
 get-your-base-character-balance:
 	cast call $(ONFT_CHARACTER_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC)
