@@ -240,7 +240,7 @@ contract OAppGameEngine is OApp {
         if (endpointID == 40245) {
             // _bridgeGems(40232, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
-            _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId); // @todo: pass _toolTokenId over (need to change the internal function itself as well as wherever you are calling it in this contract)
+            _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
             emit BaseToOpHitOk();
             // ================
             // OPTIMISM SEPOLIA
