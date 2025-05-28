@@ -10,12 +10,19 @@ struct OftSendParam {
     bytes oftCmd; // The OFT command to be executed, unused in default OFT implementations.
 }
 
+struct OftMessagingFee {
+    uint256 nativeFee;
+    uint256 lzTokenFee;
+}
+
 interface IOFTGems {
     function mintGemsToPlayer(
         address _player,
         uint256 _numberOfGemsToMint
     ) external payable;
     function balanceOf(address _player) external view returns (uint256);
+    function send(OftSendParam memory _oftSendParam, OftMessagingFee memory _fee,
+        address _refundAddress) external payable;
 }
 
 interface IONFTCharacter {

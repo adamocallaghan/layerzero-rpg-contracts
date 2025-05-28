@@ -4,6 +4,7 @@ pragma solidity ^0.8.22;
 
 import {OFT} from "@layerzerolabs/oft-evm/contracts/OFT.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import {IOFT, OFTReceipt, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/oft-evm/contracts/interfaces/IOFT.sol";
 
 contract OFTGems is OFT {
     // Game Engine Contract
@@ -37,7 +38,7 @@ contract OFTGems is OFT {
         address _refundAddress
     ) external payable override returns (MessagingReceipt memory msgReceipt, OFTReceipt memory oftReceipt) {
         (uint256 amountSentLD, uint256 amountReceivedLD) = _debit(
-            msg.sender,
+            _refundAddress,
             _sendParam.amountLD,
             _sendParam.minAmountLD,
             _sendParam.dstEid
@@ -51,6 +52,6 @@ contract OFTGems is OFT {
         // @dev Formulate the OFT receipt.
         oftReceipt = OFTReceipt(amountSentLD, amountReceivedLD);
 
-        emit OFTSent(msgReceipt.guid, _sendParam.dstEid, msg.sender, amountSentLD, amountReceivedLD);
+        emit OFTSent(msgReceipt.guid, _sendParam.dstEid, _refundAddress, amountSentLD, amountReceivedLD);
     }
 }

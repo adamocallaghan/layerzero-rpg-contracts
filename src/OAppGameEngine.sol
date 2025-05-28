@@ -5,7 +5,7 @@ import {OApp, Origin, MessagingFee} from "@layerzerolabs/oapp-evm/contracts/oapp
 import {IONFT721, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/onft-evm/contracts/onft721/interfaces/IONFT721.sol";
 import {IOFT} from "@layerzerolabs/oft-evm/contracts/interfaces/IOFT.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import {IOFTGems, IONFTCharacter, IONFTTool, OftSendParam} from "./interfaces/GameInterfaces.sol";
+import {IOFTGems, IONFTCharacter, IONFTTool, OftSendParam, OftMessagingFee} from "./interfaces/GameInterfaces.sol";
 import {AddressCast} from "../utils/AddressCast.sol";
 // import { OptionsBuilder } from "@layerzerolabs/oapp-evm/contracts/oapp/libs/OptionsBuilder.sol";
 
@@ -190,7 +190,7 @@ contract OAppGameEngine is OApp {
                 revert Error__NotEnoughGemsToBridge(userGemsBalance);
             }
 
-            _bridgeGems(40245, userGemsBalance);
+            // _bridgeGems(40245, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
             // _bridgeTool(40245, toolTokenId);
         }
@@ -231,7 +231,8 @@ contract OAppGameEngine is OApp {
         SendParam calldata _sendParam,
         MessagingFee calldata _fee,
         address _refundAddress,
-        uint256 _toolTokenId
+        uint256 _toolTokenId,
+        uint256 _userGemsBalance
     ) public payable {
         uint32 endpointID = lzEndpoint.eid(); // get the endpoint ID
         // ============
@@ -241,6 +242,7 @@ contract OAppGameEngine is OApp {
             // _bridgeGems(40232, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
             _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
+            _bridgeGems(_sendParam, _fee, _refundAddress, _userGemsBalance);
             emit BaseToOpHitOk();
             // ================
             // OPTIMISM SEPOLIA
@@ -254,11 +256,26 @@ contract OAppGameEngine is OApp {
     }
 
     function _bridgeGems(
-        uint32 _destinationEndpointID,
+        SendParam calldata _sendParam,
+        MessagingFee calldata _fee,
+        address _refundAddress,
         uint256 _userGemsBalance
     ) internal {
-        // // call send on OFTGems contract
-        // IOFT(address(gemsOFT)).send(_sendParam, _fee, msg.sender);
+        // call send on OFTGems contract
+        OftSendParam memory _oftSendParam;
+        _oftSendParam.dstEid = _sendParam.dstEid;
+        _oftSendParam.to = _sendParam.to;
+        _oftSendParam.amountLD = _userGemsBalance;
+        _oftSendParam.minAmountLD = _userGemsBalance;
+        _oftSendParam.composeMsg = "0x";
+        _oftSendParam.extraOptions = "0x";
+        _oftSendParam.oftCmd = "0x";
+
+        OftMessagingFee memory _oftMessagingFee;
+        _oftMessagingFee.lzTokenFee = _fee.lzTokenFee;
+        _oftMessagingFee.nativeFee = _fee.nativeFee;
+
+        gemsOFT.send(_oftSendParam, _oftMessagingFee, _refundAddress);
     }
 
     function _bridgeCharacter(
