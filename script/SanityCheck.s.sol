@@ -3,6 +3,7 @@ pragma solidity ^0.8.22;
 
 import {Script, console2} from "lib/forge-std/src/Script.sol";
 import {AddressCast} from "../utils/AddressCast.sol";
+import {stdJson} from "forge-std/StdJson.sol";
 
 interface IONFT {
     function setPeer(uint32, bytes32) external;
@@ -24,10 +25,54 @@ contract SanityCheck is Script {
         // uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         address DEPLOYER_PUBLIC_ADDRESS = vm.envAddress("DEPLOYER_PUBLIC_ADDRESS");
 
-        // our deployed game asset addresses (from our env file)
-        address ONFT_CHARACTER_ADDRESS = vm.envAddress("ONFT_CHARACTER_ADDRESS");
-        address ONFT_TOOL_ADDRESS = vm.envAddress("ONFT_TOOL_ADDRESS");
-        address OFT_GEMS_ADDRESS = vm.envAddress("OFT_GEMS_ADDRESS");
+        string memory root = vm.projectRoot();
+
+        // ===============================================
+        // Get ONFTCharacter Address from broadcast folder
+        // ===============================================
+        string memory characterPath = string.concat(
+            root,
+            "/broadcast/multi/DeployONFTCharacter.s.sol-latest/run.json"
+        );
+        string memory characterJson = vm.readFile(characterPath);
+        bytes memory characterContractAddress = stdJson.parseRaw(
+            characterJson,
+            ".deployments[0].transactions[0].contractAddress"
+        );
+        address ONFT_CHARACTER_ADDRESS = bytesToAddress(characterContractAddress);
+        console2.log(ONFT_CHARACTER_ADDRESS);
+
+        // ===============================================
+        // Get ONFTTool Address from broadcast folder
+        // ===============================================
+        string memory toolPath = string.concat(
+            root,
+            "/broadcast/multi/DeployONFTTool.s.sol-latest/run.json"
+        );
+        string memory toolJson = vm.readFile(toolPath);
+        bytes memory toolContractAddress = stdJson.parseRaw(
+            toolJson,
+            ".deployments[0].transactions[0].contractAddress"
+        );
+
+        address ONFT_TOOL_ADDRESS = bytesToAddress(toolContractAddress);
+        console2.log(ONFT_TOOL_ADDRESS);
+
+        // ===============================================
+        // Get OFTGems Address from broadcast folder
+        // ===============================================
+        string memory gemsPath = string.concat(
+            root,
+            "/broadcast/multi/DeployOFTGems.s.sol-latest/run.json"
+        );
+        string memory gemsJson = vm.readFile(gemsPath);
+        bytes memory gemsContractAddress = stdJson.parseRaw(
+            gemsJson,
+            ".deployments[0].transactions[0].contractAddress"
+        );
+
+        address OFT_GEMS_ADDRESS = bytesToAddress(gemsContractAddress);
+        console2.log(OFT_GEMS_ADDRESS);
 
         // ====================
         // === BASE WIRE-UP ===
@@ -61,5 +106,13 @@ contract SanityCheck is Script {
         }
 
         // vm.stopBroadcast();
+    }
+
+    function bytesToAddress(
+        bytes memory bys
+    ) private pure returns (address addr) {
+        assembly {
+            addr := mload(add(bys, 32))
+        }
     }
 }

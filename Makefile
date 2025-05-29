@@ -15,13 +15,13 @@ deploy-gems-multichain:
 	forge script script/DeployOFTGems.s.sol:DeployOFTGems --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
 
 deploy-game-engine-multichain:
-	forge script script/DeployOAppGameEngine.s.sol:DeployOAppGameEngine --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer -vvvvv
+	forge script script/DeployOAppGameEngine.s.sol:DeployOAppGameEngine --slow --multi --broadcast --verify --etherscan-api-key $(BASE_ETHERSCAN_API_KEY) --account deployer --via-ir -vvvvv
 
 set-peers:
-	forge script script/SetPeers.s.sol:SetPeers --broadcast --account deployer -vvvvv
+	forge script script/SetPeers.s.sol:SetPeers --broadcast --account deployer --via-ir -vvvvv
 
 sanity-check:
-	forge script script/SanityCheck.s.sol:SanityCheck --broadcast --account deployer -vvvvv
+	forge script script/SanityCheck.s.sol:SanityCheck --broadcast --account deployer --via-ir -vvvvv
 
 read-address-from-broadcast-json:
 	forge script script/CheckScript.s.sol:CheckScript
