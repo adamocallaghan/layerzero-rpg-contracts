@@ -23,6 +23,9 @@ set-peers:
 sanity-check:
 	forge script script/SanityCheck.s.sol:SanityCheck --broadcast --account deployer -vvvvv
 
+read-address-from-broadcast-json:
+	forge script script/CheckScript.s.sol:CheckScript
+
 # ==============
 # === BRIDGE ===
 # ==============
