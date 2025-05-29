@@ -149,6 +149,21 @@ contract OAppGameEngine is OApp {
         );
     }
 
+    // @note: the following is working
+    // however, Gems OFT needs to be deployed with an overridden send() function
+    // so we can pass the user's address (default send func uses msg.sender)
+    function testBridgeGems(
+        OftSendParam calldata _sendParam,
+        OftMessagingFee calldata _fee,
+        address _refundAddress
+    ) external payable {
+        IOFTGems(address(gemsOFT)).send{value: msg.value}(
+            _sendParam,
+            _fee,
+            _refundAddress
+        );
+    }
+
     // @note: so our bridge logic is...
     //      - check for chain using endpointID.eid
     //      - if eid == base { player must have 10 gems to bridge }
@@ -199,34 +214,6 @@ contract OAppGameEngine is OApp {
     // @note: add in the gems logic, etc., and make this the main function
     // @todo: we want to pass in our Tool tokenId and change the _sendParam to _sendCharacterParam & _sendToolParam
     // otherwise the character & tool need to be the same tokenId, which is absurd!
-    function bridgeMulti(
-        SendParam calldata _sendParam,
-        MessagingFee calldata _fee,
-        address _refundAddress
-    ) public payable {
-        uint32 endpointID = lzEndpoint.eid(); // get the endpoint ID
-        // ============
-        // BASE SEPOLIA
-        // ============
-        if (endpointID == 40245) {
-            // _bridgeGems(40232, userGemsBalance);
-            _bridgeCharacter(_sendParam, _fee, _refundAddress);
-            // _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
-            emit BaseToOpHitOk();
-            // ================
-            // OPTIMISM SEPOLIA
-            // ================
-        } else if (endpointID == 40232) {
-            // _bridgeGems(40245, userGemsBalance);
-            _bridgeCharacter(_sendParam, _fee, _refundAddress);
-            // _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
-            emit OpToBaseHitOk();
-        }
-    }
-
-    // @note: add in the gems logic, etc., and make this the main function
-    // @todo: we want to pass in our Tool tokenId and change the _sendParam to _sendCharacterParam & _sendToolParam
-    // otherwise the character & tool need to be the same tokenId, which is absurd!
     function bridgeMultiWithTokenIds(
         SendParam calldata _sendParam,
         MessagingFee calldata _fee,
@@ -267,8 +254,8 @@ contract OAppGameEngine is OApp {
         _oftSendParam.to = _sendParam.to;
         _oftSendParam.amountLD = _userGemsBalance;
         _oftSendParam.minAmountLD = _userGemsBalance;
+        _oftSendParam.extraOptions = "0x00030100110100000000000000000000000000030d40"; // @NOTE: changed on 29th May at 5:18pm, redploy and check if this was the issue, it was set as "0x" but our tokens need options passed
         _oftSendParam.composeMsg = "0x";
-        _oftSendParam.extraOptions = "0x";
         _oftSendParam.oftCmd = "0x";
 
         OftMessagingFee memory _oftMessagingFee;

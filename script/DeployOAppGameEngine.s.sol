@@ -89,7 +89,7 @@ contract DeployOAppGameEngine is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OAPP
-        OAppGameEngine baseOapp = new OAppGameEngine{salt: "rhino"}(
+        OAppGameEngine baseOapp = new OAppGameEngine{salt: "beluga"}(
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
             ONFT_CHARACTER_ADDRESS,
@@ -113,7 +113,7 @@ contract DeployOAppGameEngine is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OAPP
-        OAppGameEngine optimismOapp = new OAppGameEngine{salt: "rhino"}(
+        OAppGameEngine optimismOapp = new OAppGameEngine{salt: "beluga"}(
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
             ONFT_CHARACTER_ADDRESS,

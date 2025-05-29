@@ -101,8 +101,8 @@ contract SanityCheck is Script {
 
         // Gems balance/owner checks...
         uint256 gemsBalance = IOFT(OFT_GEMS_ADDRESS).balanceOf(DEPLOYER_PUBLIC_ADDRESS);
-        if(gemsBalance == 10) {
-            console2.log("YES - OUR DEPLOYER ACCOUNT HAS 10 GEMS");
+        if(gemsBalance == 1000000e18) {
+            console2.log("YES - OUR DEPLOYER ACCOUNT HAS 1000000e18 GEMS");
         }
 
         // vm.stopBroadcast();

@@ -1,35 +1,22 @@
-// SPDX-License-Identifier: MIT
-
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.22;
 
-import {OFT} from "@layerzerolabs/oft-evm/contracts/OFT.sol";
-import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import {IOFT, OFTReceipt, MessagingFee, MessagingReceipt, SendParam} from "@layerzerolabs/oft-evm/contracts/interfaces/IOFT.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { OFT } from "@layerzerolabs/oft-evm/contracts/OFT.sol";
 
+/// @notice OFT is an ERC-20 token that extends the OFTCore contract.
 contract OFTGems is OFT {
-    // Game Engine Contract
-    address public gameEngine;
-
     constructor(
         string memory _name,
         string memory _symbol,
         address _lzEndpoint,
         address _delegate
     ) OFT(_name, _symbol, _lzEndpoint, _delegate) Ownable(_delegate) {
-        _mint(_delegate, 10);
+        _mint(_delegate, 1000000e18);
     }
 
-    function setGameEngine(address _gameEngine) public {
-        // @note: add onlyDelegate modifier
-        gameEngine = _gameEngine;
-    }
-
-    function mintGemsToPlayer(
-        address _player,
-        uint256 _numberOfGemsToMint
-    ) public {
-        // @note: add onlyGameEngine modifier
-        _mint(_player, _numberOfGemsToMint);
+    function mint(address recipient) public {
+        _mint(recipient, 1000000e18);
     }
 
     function send(
@@ -37,6 +24,9 @@ contract OFTGems is OFT {
         MessagingFee calldata _fee,
         address _refundAddress
     ) external payable override returns (MessagingReceipt memory msgReceipt, OFTReceipt memory oftReceipt) {
+        // @dev Applies the token transfers regarding this send() operation.
+        // - amountSentLD is the amount in local decimals that was ACTUALLY sent/debited from the sender.
+        // - amountReceivedLD is the amount in local decimals that will be received/credited to the recipient on the remote OFT instance.
         (uint256 amountSentLD, uint256 amountReceivedLD) = _debit(
             _refundAddress,
             _sendParam.amountLD,

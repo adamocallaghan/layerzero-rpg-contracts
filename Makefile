@@ -49,7 +49,7 @@ send-character-from-base-to-optimism-via-bridge-multi-function:
 # - bridges both the character & tool across
 # - character tokenId is taken from the SendParam, tool tokenId is passed in separately
 send-character-from-base-to-optimism-via-bridge-multi-function-with-token-ids:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMultiWithTokenIds((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address,uint256)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,8,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) 9 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMultiWithTokenIds((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address,uint256,uint256)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,8,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) 9 1000000000000000000 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
 
 # =================================================================================
 # === bridgeToolDirect: calls our internal _bridgeTool() function and that's it ===
@@ -70,13 +70,15 @@ send-tool-from-optimism-to-base-via-bridge-tool-direct:
 # public functions
 # =========================================
 
+# ADAM NOTE: THE BELOW ARE WORKING ALSO (JUST BEWARE THE OUTSTANDING ISSUE AROUND GAMEENGINE NOT HAVING TOKENS)
+
 # testBridgeCharacter: Base => Optimism
 send-character-from-base-to-optimism-via-test-bridge-character-function:
 	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridgeCharacter((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,11,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
 # testBridgeTool: Base => Optimism
 send-tool-from-base-to-optimism-via-test-bridge-tool-function:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridgeTool((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,21,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridgeTool((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,12,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
 # testBridgeCharacter: Optimsim => Base
 send-character-from-optimism-to-base-via-test-bridge-character-function:
@@ -84,23 +86,35 @@ send-character-from-optimism-to-base-via-test-bridge-character-function:
 
 # testBridgeTool: Optimsim => Base
 send-tool-from-optimism-to-base-via-test-bridge-tool-function:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridgeTool((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40245,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,31,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer --value 0.01ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridgeTool((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40245,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,22,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer --value 0.01ether
+
+# NOTE THAT GEMS OFT CONTRACT NEEDS TO HAVE THE SEND FUNC OVERRIDDEN TO PASS USER ADDRESS INSTEAD OF MSG.SENDER
+send-gems-from-base-to-optimism-via-test-bridge-gems-function:
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "testBridgeGems((uint32,bytes32,uint256,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,1000000000000000000,1000000000000000000,0x00030100110100000000000000000000000000030d40,0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether -vvvvv
 
 # ===================================================================
 # === Send ONFT Character & Tool *DIRECTLY* using their contracts ===
 # ===================================================================
 
+# ADAM NOTE: THE BELOW WORK AS OF 29TH MAY 2025
+
 send-character-from-base-to-optimism:
 	cast send $(ONFT_CHARACTER_ADDRESS) "send((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,10,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
 send-tool-from-base-to-optimism:
-	cast send $(ONFT_TOOL_ADDRESS) "send((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,20,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
+	cast send $(ONFT_TOOL_ADDRESS) "send((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,11,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether
 
 send-character-from-optimism-to-base:
 	cast send $(ONFT_CHARACTER_ADDRESS) "send((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40245,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,20,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer --value 0.01ether
 
 send-tool-from-optimism-to-base:
-	cast send $(ONFT_TOOL_ADDRESS) "send((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40245,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,30,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer --value 0.01ether
+	cast send $(ONFT_TOOL_ADDRESS) "send((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40245,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,21,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC) --account deployer --value 0.01ether
+
+send-gems-from-base-to-optimism:
+	cast send $(OFT_GEMS_ADDRESS) "send((uint32,bytes32,uint256,uint256,bytes,bytes,bytes),(uint,uint),address)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,1000000000000000000,1000000000000000000,0x00030100110100000000000000000000000000030d40,0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.01ether -vvvvv
+
+call-quote-send-on-base-gems-contract:
+	cast call $(OFT_GEMS_ADDRESS) "quoteSend((uint32,bytes32,uint256,uint256,bytes,bytes,bytes),bool)(uint,uint)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,1000000000000000000,1000000000000000000,0x00030100110100000000000000000000000000030d40,0x,0x)" false --rpc-url $(BASE_SEPOLIA_RPC)
 
 # ======================
 # === Other Commands ===
