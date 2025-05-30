@@ -220,8 +220,8 @@ contract OAppGameEngine is OApp {
         SendParam calldata _sendParam,
         MessagingFee calldata _fee,
         address _refundAddress,
-        uint256 _toolTokenId,
-        uint256 _userGemsBalance
+        uint256 _toolTokenId
+        // uint256 _userGemsBalance
     ) public payable {
         uint32 endpointID = lzEndpoint.eid(); // get the endpoint ID
         // ============
@@ -231,7 +231,7 @@ contract OAppGameEngine is OApp {
             // _bridgeGems(40232, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
             _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
-            _bridgeGems(_sendParam, _fee, _refundAddress, _userGemsBalance);
+            // _bridgeGems(_sendParam, _fee, _refundAddress, _userGemsBalance);
             emit BaseToOpHitOk();
             // ================
             // OPTIMISM SEPOLIA
