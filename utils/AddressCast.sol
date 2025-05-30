@@ -38,4 +38,11 @@ library AddressCast {
         if (_addressBytes.length != 20) revert AddressCast_InvalidAddress();
         result = address(bytes20(_addressBytes));
     }
+
+    function stringToBytes32(string memory source) internal pure returns (bytes32 result) {
+        require(bytes(source).length <= 32, "String too long");
+        assembly {
+            result := mload(add(source, 32))
+        }
+    }
 }

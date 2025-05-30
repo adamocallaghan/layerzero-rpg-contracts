@@ -22,6 +22,9 @@ contract DeployOAppGameEngine is Script {
         // op lz endpoint + id
         string memory OPTIMISM_LZ_ENDPOINT = "OPTIMISM_SEPOLIA_LZ_ENDPOINT";
 
+        string memory SALT = "SALT";
+        bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
+
         // ONFT character, tool & OFT gems addresses for OAPP constructor
         // address ONFT_CHARACTER_ADDRESS = vm.envAddress("ONFT_CHARACTER_ADDRESS");
         // address ONFT_TOOL_ADDRESS = vm.envAddress("ONFT_TOOL_ADDRESS");
@@ -89,7 +92,7 @@ contract DeployOAppGameEngine is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OAPP
-        OAppGameEngine baseOapp = new OAppGameEngine{salt: "poodle"}(
+        OAppGameEngine baseOapp = new OAppGameEngine{salt: SALT32}(
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
             ONFT_CHARACTER_ADDRESS,
@@ -113,7 +116,7 @@ contract DeployOAppGameEngine is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OAPP
-        OAppGameEngine optimismOapp = new OAppGameEngine{salt: "poodle"}(
+        OAppGameEngine optimismOapp = new OAppGameEngine{salt: SALT32}(
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint
             vm.envAddress(DEPLOYER_PUBLIC_ADDRESS), // owner
             ONFT_CHARACTER_ADDRESS,

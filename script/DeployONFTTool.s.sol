@@ -23,6 +23,9 @@ contract DeployONFTTool is Script {
 
         string memory ONFT_TOOL_NAME = "ONFT_TOOL_NAME";
         string memory ONFT_TOOL_SYMBOL = "ONFT_TOOL_SYMBOL";
+
+        string memory SALT = "SALT";
+        bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
         
         // ========================
         // === BASE DEPLOYMENTS ===
@@ -37,7 +40,7 @@ contract DeployONFTTool is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTTool baseONFT = new ONFTTool{salt: "poodle"}(
+        ONFTTool baseONFT = new ONFTTool{salt: SALT32}(
             ONFT_TOOL_NAME,
             ONFT_TOOL_SYMBOL,
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
@@ -60,7 +63,7 @@ contract DeployONFTTool is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTTool optimismONFT = new ONFTTool{salt: "poodle"}(
+        ONFTTool optimismONFT = new ONFTTool{salt: SALT32}(
             ONFT_TOOL_NAME,
             ONFT_TOOL_SYMBOL,
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint

@@ -23,6 +23,9 @@ contract DeployONFTCharacter is Script {
 
         string memory ONFT_CHARACTER_NAME = "ONFT_CHARACTER_NAME";
         string memory ONFT_CHARACTER_SYMBOL = "ONFT_CHARACTER_SYMBOL";
+
+        string memory SALT = "SALT";
+        bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
         
         // ========================
         // === BASE DEPLOYMENTS ===
@@ -37,7 +40,7 @@ contract DeployONFTCharacter is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTCharacter baseONFT = new ONFTCharacter{salt: "poodle"}(
+        ONFTCharacter baseONFT = new ONFTCharacter{salt: SALT32}(
             ONFT_CHARACTER_NAME,
             ONFT_CHARACTER_SYMBOL,
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
@@ -60,7 +63,7 @@ contract DeployONFTCharacter is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy ONFT
-        ONFTCharacter optimismONFT = new ONFTCharacter{salt: "poodle"}(
+        ONFTCharacter optimismONFT = new ONFTCharacter{salt: SALT32}(
             ONFT_CHARACTER_NAME,
             ONFT_CHARACTER_SYMBOL,
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint

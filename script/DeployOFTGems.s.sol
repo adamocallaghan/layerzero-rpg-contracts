@@ -23,6 +23,9 @@ contract DeployOFTGems is Script {
 
         string memory OFT_GEMS_NAME = "OFT_GEMS_NAME";
         string memory OFT_GEMS_SYMBOL = "OFT_GEMS_SYMBOL";
+
+        string memory SALT = "SALT";
+        bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
         
         // ========================
         // === BASE DEPLOYMENTS ===
@@ -37,7 +40,7 @@ contract DeployOFTGems is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OFT
-        OFTGems baseOFT = new OFTGems{salt: "poodle"}(
+        OFTGems baseOFT = new OFTGems{salt: SALT32}(
             OFT_GEMS_NAME,
             OFT_GEMS_SYMBOL,
             vm.envAddress(BASE_LZ_ENDPOINT), // lzEndpoint
@@ -60,7 +63,7 @@ contract DeployOFTGems is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // deploy OFT
-        OFTGems optimismOFT = new OFTGems{salt: "poodle"}(
+        OFTGems optimismOFT = new OFTGems{salt: SALT32}(
             OFT_GEMS_NAME,
             OFT_GEMS_SYMBOL,
             vm.envAddress(OPTIMISM_LZ_ENDPOINT), // lzEndpoint
