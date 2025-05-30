@@ -49,7 +49,7 @@ send-character-from-base-to-optimism-via-bridge-multi-function:
 # - bridges both the character & tool across
 # - character tokenId is taken from the SendParam, tool tokenId is passed in separately
 send-character-from-base-to-optimism-via-bridge-multi-function-with-token-ids:
-	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMultiWithTokenIds((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address,uint256,uint256)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,8,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) 9 1000000000000000000 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.03ether
+	cast send $(OAPP_GAME_ENGINE_ADDRESS) "bridgeMultiWithTokenIds((uint32,bytes32,uint256,bytes,bytes,bytes),(uint,uint),address,uint256,uint256)" "(40232,0x00000000000000000000000064a822f980dc5f126215d75d11dd8114ed0bdb5f,8,$(MESSAGE_OPTIONS_BYTES),0x,0x)" "(10000000000000000,0)" $(DEPLOYER_PUBLIC_ADDRESS) 9 1000000000000000000 --rpc-url $(BASE_SEPOLIA_RPC) --account deployer --value 0.05ether
 
 # =================================================================================
 # === bridgeToolDirect: calls our internal _bridgeTool() function and that's it ===
@@ -184,6 +184,9 @@ get-your-base-tool-balance:
 
 get-your-optimism-tool-balance:
 	cast call $(ONFT_TOOL_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(OPTIMISM_SEPOLIA_RPC)
+
+get-your-base-gems-balance:
+	cast call $(OFT_GEMS_ADDRESS) "balanceOf(address)(uint256)" $(DEPLOYER_PUBLIC_ADDRESS) --rpc-url $(BASE_SEPOLIA_RPC)
 
 # =======================
 # === Verify Commands ===
