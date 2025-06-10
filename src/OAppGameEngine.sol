@@ -251,18 +251,18 @@ contract OAppGameEngine is OApp {
         uint256 _userGemsBalance
     ) internal {
         // call send on OFTGems contract
-        // OftSendParam memory _oftSendParam;
-        // _oftSendParam.dstEid = _sendParam.dstEid;
-        // _oftSendParam.to = _sendParam.to;
-        // _oftSendParam.amountLD = _userGemsBalance;
-        // _oftSendParam.minAmountLD = _userGemsBalance;
-        // _oftSendParam.extraOptions = "0x00030100110100000000000000000000000000030d40"; // @NOTE: changed on 29th May at 5:18pm, redploy and check if this was the issue, it was set as "0x" but our tokens need options passed
-        // _oftSendParam.composeMsg = "0x";
-        // _oftSendParam.oftCmd = "0x";
+        OftSendParam memory _oftSendParam;
+        _oftSendParam.dstEid = _sendParam.dstEid;
+        _oftSendParam.to = _sendParam.to;
+        _oftSendParam.amountLD = _userGemsBalance;
+        _oftSendParam.minAmountLD = _userGemsBalance;
+        _oftSendParam.extraOptions = "0x00030100110100000000000000000000000000030d40"; // @NOTE: changed on 29th May at 5:18pm, redploy and check if this was the issue, it was set as "0x" but our tokens need options passed
+        _oftSendParam.composeMsg = "0x";
+        _oftSendParam.oftCmd = "0x";
 
-        // OftMessagingFee memory _oftMessagingFee;
-        // _oftMessagingFee.lzTokenFee = _fee.lzTokenFee;
-        // _oftMessagingFee.nativeFee = _fee.nativeFee;
+        OftMessagingFee memory _oftMessagingFee;
+        _oftMessagingFee.lzTokenFee = _fee.lzTokenFee;
+        _oftMessagingFee.nativeFee = _fee.nativeFee;
 
         // gemsOFT.send(_oftSendParam, _oftMessagingFee, _refundAddress);
         emit BridgeGemsHit();
