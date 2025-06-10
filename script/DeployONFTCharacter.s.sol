@@ -24,8 +24,9 @@ contract DeployONFTCharacter is Script {
         string memory ONFT_CHARACTER_NAME = "ONFT_CHARACTER_NAME";
         string memory ONFT_CHARACTER_SYMBOL = "ONFT_CHARACTER_SYMBOL";
 
-        string memory SALT = "SALT";
+        string memory SALT = vm.envString("SALT");
         bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
+        console2.log("SALT is: ", SALT);
         
         // ========================
         // === BASE DEPLOYMENTS ===

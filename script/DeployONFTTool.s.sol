@@ -24,7 +24,7 @@ contract DeployONFTTool is Script {
         string memory ONFT_TOOL_NAME = "ONFT_TOOL_NAME";
         string memory ONFT_TOOL_SYMBOL = "ONFT_TOOL_SYMBOL";
 
-        string memory SALT = "SALT";
+        string memory SALT = vm.envString("SALT");
         bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
         
         // ========================

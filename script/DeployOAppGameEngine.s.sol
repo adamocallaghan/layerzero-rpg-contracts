@@ -14,16 +14,28 @@ contract DeployOAppGameEngine is Script {
 
         // deployer
         uint256 deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        string memory DEPLOYER_PUBLIC_ADDRESS = "DEPLOYER_PUBLIC_ADDRESS";
+        string memory  DEPLOYER_PUBLIC_ADDRESS = "DEPLOYER_PUBLIC_ADDRESS";
 
         // base lz endpoint + id
-        string memory BASE_LZ_ENDPOINT = "BASE_SEPOLIA_LZ_ENDPOINT";
+        string memory  BASE_LZ_ENDPOINT = "BASE_SEPOLIA_LZ_ENDPOINT";
 
         // op lz endpoint + id
         string memory OPTIMISM_LZ_ENDPOINT = "OPTIMISM_SEPOLIA_LZ_ENDPOINT";
 
-        string memory SALT = "SALT";
+        string memory SALT = vm.envString("SALT");
         bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
+        console2.log("SALT is: ", SALT);
+
+        console2.log("********************************************");
+        console2.log("********************************************");
+        console2.log("********************************************");
+        console2.log(DEPLOYER_PUBLIC_ADDRESS);
+        console2.log(BASE_LZ_ENDPOINT);
+        console2.log(OPTIMISM_LZ_ENDPOINT);
+        console2.log(SALT);
+        console2.log("********************************************");
+        console2.log("********************************************");
+        console2.log("********************************************");
 
         // ONFT character, tool & OFT gems addresses for OAPP constructor
         // address ONFT_CHARACTER_ADDRESS = vm.envAddress("ONFT_CHARACTER_ADDRESS");

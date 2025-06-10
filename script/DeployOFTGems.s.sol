@@ -24,8 +24,21 @@ contract DeployOFTGems is Script {
         string memory OFT_GEMS_NAME = "OFT_GEMS_NAME";
         string memory OFT_GEMS_SYMBOL = "OFT_GEMS_SYMBOL";
 
-        string memory SALT = "SALT";
+        string memory SALT = vm.envString("SALT");
         bytes32 SALT32 = AddressCast.stringToBytes32(SALT);
+        
+        console2.log("********************************************");
+        console2.log("********************************************");
+        console2.log("********************************************");
+        console2.log(DEPLOYER_PUBLIC_ADDRESS);
+        console2.log(BASE_LZ_ENDPOINT);
+        console2.log(OPTIMISM_LZ_ENDPOINT);
+        console2.log(OFT_GEMS_NAME);
+        console2.log(OFT_GEMS_SYMBOL);
+        console2.log(SALT);
+        console2.log("********************************************");
+        console2.log("********************************************");
+        console2.log("********************************************");
         
         // ========================
         // === BASE DEPLOYMENTS ===

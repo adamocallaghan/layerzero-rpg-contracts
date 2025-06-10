@@ -231,7 +231,7 @@ contract OAppGameEngine is OApp {
             // _bridgeGems(40232, userGemsBalance);
             _bridgeCharacter(_sendParam, _fee, _refundAddress);
             _bridgeTool(_sendParam, _fee, _refundAddress, _toolTokenId);
-            // _bridgeGems(_sendParam, _fee, _refundAddress, _userGemsBalance);
+            _bridgeGems(_sendParam, _fee, _refundAddress, 10);
             emit BaseToOpHitOk();
             // ================
             // OPTIMISM SEPOLIA
