@@ -264,8 +264,19 @@ contract OAppGameEngine is OApp {
         _oftMessagingFee.lzTokenFee = _fee.lzTokenFee;
         _oftMessagingFee.nativeFee = _fee.nativeFee;
 
-        // gemsOFT.send(_oftSendParam, _oftMessagingFee, _refundAddress);
+        gemsOFT.send(_oftSendParam, _oftMessagingFee, _refundAddress);
         emit BridgeGemsHit();
+    }
+
+    function _bridgeGemsNew(
+        OftSendParam calldata _oftSendParam,
+        OftMessagingFee calldata _oftMessagingFee,
+        address _refundAddress,
+        uint256 _userGemsBalance
+    ) internal {
+        // call send on OFTGems contract
+        gemsOFT.send(_oftSendParam, _oftMessagingFee, _refundAddress);
+        emit BridgeGemsNewHit();
     }
 
     function _bridgeCharacter(
