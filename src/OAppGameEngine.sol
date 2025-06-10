@@ -53,6 +53,7 @@ contract OAppGameEngine is OApp {
     event ToolBridged();
 
     event BridgeGemsHit();
+    event BridgeGemsNewHit();
 
     event HitFunctionOk();
 
@@ -264,7 +265,7 @@ contract OAppGameEngine is OApp {
         _oftMessagingFee.lzTokenFee = _fee.lzTokenFee;
         _oftMessagingFee.nativeFee = _fee.nativeFee;
 
-        gemsOFT.send(_oftSendParam, _oftMessagingFee, _refundAddress);
+        gemsOFT.send{value: _fee.nativeFee}(_oftSendParam, _oftMessagingFee, _refundAddress);
         emit BridgeGemsHit();
     }
 
@@ -275,7 +276,7 @@ contract OAppGameEngine is OApp {
         uint256 _userGemsBalance
     ) internal {
         // call send on OFTGems contract
-        gemsOFT.send(_oftSendParam, _oftMessagingFee, _refundAddress);
+        gemsOFT.send{value: _oftMessagingFee.nativeFee}(_oftSendParam, _oftMessagingFee, _refundAddress);
         emit BridgeGemsNewHit();
     }
 
